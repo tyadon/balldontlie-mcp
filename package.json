@@ -1,0 +1,55 @@
+{
+  "name": "@balldontlie/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for BALLDONTLIE sports API endpoints",
+  "main": "dist/web-server.js",
+  "type": "module",
+  "bin": {
+    "balldontlie-mcp-server": "./dist/web-server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "chmod +x dist/web-server.js",
+    "start": "node dist/web-server.js",
+    "dev": "ts-node --esm src/web-server.ts",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/balldontlie-api/mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/balldontlie-api/mcp-server/issues"
+  },
+  "homepage": "https://github.com/balldontlie-api/mcp-server#readme",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "sports",
+    "api",
+    "nba",
+    "nfl",
+    "mlb",
+    "epl",
+    "nhl",
+    "balldontlie"
+  ],
+  "author": "BALLDONTLIE",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "express": "^4.18.0",
+    "zod": "^3.22.0",
+    "dd-trace": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

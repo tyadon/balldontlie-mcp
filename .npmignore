@@ -1,0 +1,43 @@
+# Source files
+src/
+*.ts
+!dist/**/*.d.ts
+
+# Config files
+tsconfig.json
+.env
+.env.*
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git files
+.git/
+.gitignore
+
+# Documentation images/assets
+docs/
+
+# Test files
+*.test.ts
+*.spec.ts
+__tests__/
+
+# Build artifacts not needed
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (if running locally)
+Dockerfile
+.dockerignore
+
+# Node debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

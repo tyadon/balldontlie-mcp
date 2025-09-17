@@ -1,0 +1,131 @@
+import { MCPTool } from "../types.js";
+import { APIClient } from "../client.js";
+import * as schemas from "../schemas/nhl-schemas.js";
+
+export function createNHLTools(apiClient: APIClient): MCPTool[] {
+  return [
+    {
+      name: "nhl_get_teams",
+      description:
+        "Get all NHL teams with optional filtering by conference or division",
+      inputSchema: schemas.nhlTeamsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nhl/v1/teams", params, headers);
+      },
+    },
+
+    {
+      name: "nhl_get_team_by_id",
+      description: "Get a specific NHL team by ID",
+      inputSchema: schemas.nhlTeamByIdSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        const { id } = params;
+        return await apiClient.makeRequest(
+          `/nhl/v1/teams/${id}`,
+          undefined,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_team_season_stats",
+      description: "Get season statistics for a specific NHL team",
+      inputSchema: schemas.nhlTeamSeasonStatsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        const { id, ...queryParams } = params;
+        return await apiClient.makeRequest(
+          `/nhl/v1/teams/${id}/season_stats`,
+          queryParams,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_team_stats_leaders",
+      description: "Get NHL team statistical leaders",
+      inputSchema: schemas.nhlTeamStatsLeadersSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nhl/v1/team_stats/leaders",
+          params,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_players",
+      description: "Get NHL players with optional filtering and pagination",
+      inputSchema: schemas.nhlPlayersSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nhl/v1/players", params, headers);
+      },
+    },
+
+    {
+      name: "nhl_get_player_season_stats",
+      description: "Get season statistics for a specific NHL player",
+      inputSchema: schemas.nhlPlayerSeasonStatsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        const { id, ...queryParams } = params;
+        return await apiClient.makeRequest(
+          `/nhl/v1/players/${id}/season_stats`,
+          queryParams,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_player_stats_leaders",
+      description: "Get NHL player statistical leaders",
+      inputSchema: schemas.nhlPlayerStatsLeadersSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nhl/v1/player_stats/leaders",
+          params,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_games",
+      description:
+        "Get NHL games with optional filtering by date, season, team, etc.",
+      inputSchema: schemas.nhlGamesSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nhl/v1/games", params, headers);
+      },
+    },
+
+    {
+      name: "nhl_get_standings",
+      description: "Get NHL team standings by season, conference, or division",
+      inputSchema: schemas.nhlStandingsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nhl/v1/standings",
+          params,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nhl_get_box_scores",
+      description:
+        "Get NHL game box scores with detailed player and team statistics",
+      inputSchema: schemas.nhlBoxScoresSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nhl/v1/box_scores",
+          params,
+          headers
+        );
+      },
+    },
+  ];
+}
