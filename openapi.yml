@@ -1,0 +1,6986 @@
+openapi: 3.1.0
+info:
+  title: BALLDONTLIE
+  version: "1.0.0"
+  description: |
+    API for accessing NBA, NFL, and MLB statistics and data.
+    Includes comprehensive endpoints for teams, players, games, statistics, and more.
+
+servers:
+  - url: https://api.balldontlie.io
+    description: Production server
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  schemas:
+    # Common Components
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+    Pagination:
+      type: object
+      properties:
+        next_cursor:
+          type: integer
+          description: Cursor for the next page of results
+        per_page:
+          type: integer
+          description: Number of results per page
+
+    # NBA Components
+    NBATeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        conference:
+          type: string
+          enum: [East, West]
+        division:
+          type: string
+          enum: [Atlantic, Central, Southeast, Northwest, Pacific, Southwest]
+        city:
+          type: string
+        name:
+          type: string
+        full_name:
+          type: string
+        abbreviation:
+          type: string
+
+    NBAPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        position:
+          type: string
+        height:
+          type: string
+        weight:
+          type: string
+        jersey_number:
+          type: string
+        college:
+          type: string
+        country:
+          type: string
+        draft_year:
+          type: integer
+        draft_round:
+          type: integer
+        draft_number:
+          type: integer
+        team:
+          $ref: "#/components/schemas/NBATeam"
+
+    NBAGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date
+        season:
+          type: integer
+        status:
+          type: string
+          nullable: true
+        period:
+          type: integer
+          nullable: true
+        time:
+          type: string
+          nullable: true
+        datetime:
+          type: string
+          format: date-time
+          nullable: true
+        postseason:
+          type: boolean
+        home_team_score:
+          type: integer
+        visitor_team_score:
+          type: integer
+        home_team:
+          $ref: "#/components/schemas/NBATeam"
+        visitor_team:
+          $ref: "#/components/schemas/NBATeam"
+
+    NBAStats:
+      type: object
+      properties:
+        id:
+          type: integer
+        min:
+          type: string
+        fgm:
+          type: integer
+        fga:
+          type: integer
+        fg_pct:
+          type: number
+        fg3m:
+          type: integer
+        fg3a:
+          type: integer
+        fg3_pct:
+          type: number
+        ftm:
+          type: integer
+        fta:
+          type: integer
+        ft_pct:
+          type: number
+        oreb:
+          type: integer
+        dreb:
+          type: integer
+        reb:
+          type: integer
+        ast:
+          type: integer
+        stl:
+          type: integer
+        blk:
+          type: integer
+        turnover:
+          type: integer
+        pf:
+          type: integer
+        pts:
+          type: integer
+        player:
+          $ref: "#/components/schemas/NBAPlayer"
+        team:
+          $ref: "#/components/schemas/NBATeam"
+        game:
+          $ref: "#/components/schemas/NBAGame"
+
+    NBASeasonAverages:
+      type: object
+      properties:
+        games_played:
+          type: integer
+        pts:
+          type: number
+        ast:
+          type: number
+        reb:
+          type: number
+        stl:
+          type: number
+        blk:
+          type: number
+        turnover:
+          type: number
+        min:
+          type: string
+        fgm:
+          type: number
+        fga:
+          type: number
+        fg_pct:
+          type: number
+        fg3m:
+          type: number
+        fg3a:
+          type: number
+        fg3_pct:
+          type: number
+        ftm:
+          type: number
+        fta:
+          type: number
+        ft_pct:
+          type: number
+        oreb:
+          type: number
+        dreb:
+          type: number
+        player_id:
+          type: integer
+        season:
+          type: integer
+
+    NBASeasonAverageV2:
+      type: object
+      properties:
+        player_id:
+          type: integer
+        season:
+          type: integer
+        season_type:
+          type: string
+        stats:
+          type: object
+          additionalProperties: true
+
+    NBAStandings:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/NBATeam"
+        conference_record:
+          type: string
+        conference_rank:
+          type: integer
+        division_record:
+          type: string
+        division_rank:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+        home_record:
+          type: string
+        road_record:
+          type: string
+        season:
+          type: integer
+
+    NBABoxScore:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        season:
+          type: integer
+        status:
+          type: string
+        period:
+          type: integer
+        time:
+          type: string
+        postseason:
+          type: boolean
+        home_team_score:
+          type: integer
+        visitor_team_score:
+          type: integer
+        home_team:
+          type: object
+          properties:
+            team:
+              $ref: "#/components/schemas/NBATeam"
+            players:
+              type: array
+              items:
+                type: object
+                properties:
+                  min:
+                    type: string
+                  fgm:
+                    type: integer
+                  fga:
+                    type: integer
+                  fg_pct:
+                    type: number
+                  fg3m:
+                    type: integer
+                  fg3a:
+                    type: integer
+                  fg3_pct:
+                    type: number
+                  ftm:
+                    type: integer
+                  fta:
+                    type: integer
+                  ft_pct:
+                    type: number
+                  oreb:
+                    type: integer
+                  dreb:
+                    type: integer
+                  reb:
+                    type: integer
+                  ast:
+                    type: integer
+                  stl:
+                    type: integer
+                  blk:
+                    type: integer
+                  turnover:
+                    type: integer
+                  pf:
+                    type: integer
+                  pts:
+                    type: integer
+                  player:
+                    $ref: "#/components/schemas/NBAPlayer"
+        visitor_team:
+          type: object
+          properties:
+            team:
+              $ref: "#/components/schemas/NBATeam"
+            players:
+              type: array
+              items:
+                type: object
+                properties:
+                  min:
+                    type: string
+                  fgm:
+                    type: integer
+                  fga:
+                    type: integer
+                  fg_pct:
+                    type: number
+                  fg3m:
+                    type: integer
+                  fg3a:
+                    type: integer
+                  fg3_pct:
+                    type: number
+                  ftm:
+                    type: integer
+                  fta:
+                    type: integer
+                  ft_pct:
+                    type: number
+                  oreb:
+                    type: integer
+                  dreb:
+                    type: integer
+                  reb:
+                    type: integer
+                  ast:
+                    type: integer
+                  stl:
+                    type: integer
+                  blk:
+                    type: integer
+                  turnover:
+                    type: integer
+                  pf:
+                    type: integer
+                  pts:
+                    type: integer
+                  player:
+                    $ref: "#/components/schemas/NBAPlayer"
+
+    NBAPlayerInjury:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NBAPlayer"
+        return_date:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+
+    NBALeader:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NBAPlayer"
+        value:
+          type: number
+        stat_type:
+          type: string
+          enum: [reb, dreb, tov, ast, oreb, min, pts, stl, blk]
+        rank:
+          type: integer
+        season:
+          type: integer
+        games_played:
+          type: integer
+
+    NBAAdvancedStats:
+      type: object
+      properties:
+        id:
+          type: integer
+        pie:
+          type: number
+        pace:
+          type: number
+        assist_percentage:
+          type: number
+        assist_ratio:
+          type: number
+        assist_to_turnover:
+          type: number
+        defensive_rating:
+          type: number
+        defensive_rebound_percentage:
+          type: number
+        effective_field_goal_percentage:
+          type: number
+        net_rating:
+          type: number
+        offensive_rating:
+          type: number
+        offensive_rebound_percentage:
+          type: number
+        rebound_percentage:
+          type: number
+        true_shooting_percentage:
+          type: number
+        turnover_ratio:
+          type: number
+        usage_percentage:
+          type: number
+        player:
+          $ref: "#/components/schemas/NBAPlayer"
+        team:
+          $ref: "#/components/schemas/NBATeam"
+        game:
+          $ref: "#/components/schemas/NBAGame"
+
+    NFLTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        conference:
+          type: string
+          enum: [AFC, NFC]
+        division:
+          type: string
+          enum: [NORTH, SOUTH, EAST, WEST]
+        location:
+          type: string
+        name:
+          type: string
+        full_name:
+          type: string
+        abbreviation:
+          type: string
+
+    NFLPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        position:
+          type: string
+        position_abbreviation:
+          type: string
+        height:
+          type: string
+        weight:
+          type: string
+        jersey_number:
+          type: string
+        college:
+          type: string
+        experience:
+          type: string
+        age:
+          type: integer
+        team:
+          $ref: "#/components/schemas/NFLTeam"
+
+    NFLGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        visitor_team:
+          $ref: "#/components/schemas/NFLTeam"
+        home_team:
+          $ref: "#/components/schemas/NFLTeam"
+        summary:
+          type: string
+        venue:
+          type: string
+        week:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        season:
+          type: integer
+        postseason:
+          type: boolean
+        status:
+          type: string
+        home_team_score:
+          type: integer
+        visitor_team_score:
+          type: integer
+        home_team_q1:
+          type: integer
+        home_team_q2:
+          type: integer
+        home_team_q3:
+          type: integer
+        home_team_q4:
+          type: integer
+        home_team_ot:
+          type: integer
+        visitor_team_q1:
+          type: integer
+        visitor_team_q2:
+          type: integer
+        visitor_team_q3:
+          type: integer
+        visitor_team_q4:
+          type: integer
+        visitor_team_ot:
+          type: integer
+
+    NFLStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        team:
+          $ref: "#/components/schemas/NFLTeam"
+        game:
+          $ref: "#/components/schemas/NFLGame"
+        passing_completions:
+          type: integer
+        passing_attempts:
+          type: integer
+        passing_yards:
+          type: integer
+        yards_per_pass_attempt:
+          type: integer
+        passing_touchdowns:
+          type: integer
+        passing_interceptions:
+          type: integer
+        sacks:
+          type: integer
+        sacks_loss:
+          type: integer
+        qbr:
+          type: integer
+        qb_rating:
+          type: integer
+        rushing_attempts:
+          type: integer
+        rushing_yards:
+          type: integer
+        yards_per_rush_attempt:
+          type: integer
+        rushing_touchdowns:
+          type: integer
+        long_rushing:
+          type: integer
+        receptions:
+          type: integer
+        receiving_yards:
+          type: integer
+        yards_per_reception:
+          type: integer
+        receiving_touchdowns:
+          type: integer
+        long_reception:
+          type: integer
+        receiving_targets:
+          type: integer
+        fumbles:
+          type: integer
+        fumbles_lost:
+          type: integer
+        fumbles_recovered:
+          type: integer
+        total_tackles:
+          type: integer
+        defensive_sacks:
+          type: integer
+        solo_tackles:
+          type: integer
+        tackles_for_loss:
+          type: integer
+        passes_defended:
+          type: integer
+        qb_hits:
+          type: integer
+        fumbles_touchdowns:
+          type: integer
+        defensive_interceptions:
+          type: integer
+        interception_yards:
+          type: integer
+        interception_touchdowns:
+          type: integer
+        kick_returns:
+          type: integer
+        kick_return_yards:
+          type: integer
+        yards_per_kick_return:
+          type: integer
+        long_kick_return:
+          type: integer
+        kick_return_touchdowns:
+          type: integer
+        punt_returns:
+          type: integer
+        punt_return_yards:
+          type: integer
+        yards_per_punt_return:
+          type: integer
+        long_punt_return:
+          type: integer
+        punt_return_touchdowns:
+          type: integer
+        field_goal_attempts:
+          type: integer
+        field_goals_made:
+          type: integer
+        field_goal_pct:
+          type: integer
+        long_field_goal_made:
+          type: integer
+        extra_points_made:
+          type: integer
+        total_points:
+          type: integer
+        punts:
+          type: integer
+        punt_yards:
+          type: integer
+        gross_avg_punt_yards:
+          type: integer
+        touchbacks:
+          type: integer
+        punts_inside_20:
+          type: integer
+        long_punt:
+          type: integer
+
+    NFLStandings:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/NFLTeam"
+        win_streak:
+          type: integer
+        points_for:
+          type: integer
+        points_against:
+          type: integer
+        playoff_seed:
+          type: integer
+        point_differential:
+          type: integer
+        overall_record:
+          type: string
+        conference_record:
+          type: string
+        division_record:
+          type: string
+        wins:
+          type: integer
+        losses:
+          type: integer
+        ties:
+          type: integer
+        home_record:
+          type: string
+        road_record:
+          type: string
+        season:
+          type: integer
+
+    NFLPlayerInjury:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        status:
+          type: string
+        comment:
+          type: string
+        date:
+          type: string
+          format: date-time
+
+    NFLSeasonStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        games_played:
+          type: integer
+        season:
+          type: integer
+        postseason:
+          type: boolean
+        passing_completions:
+          type: integer
+        passing_attempts:
+          type: integer
+        passing_yards:
+          type: integer
+        passing_yards_per_game:
+          type: number
+        passing_touchdowns:
+          type: integer
+        passing_interceptions:
+          type: integer
+        passing_completion_pct:
+          type: number
+        passing_first_downs:
+          type: integer
+        passing_first_down_pct:
+          type: number
+        passing_20_plus_yards:
+          type: integer
+        passing_40_plus_yards:
+          type: integer
+        passing_long:
+          type: integer
+        passing_sacks:
+          type: integer
+        passing_sack_yards:
+          type: integer
+        qb_rating:
+          type: number
+        rushing_attempts:
+          type: integer
+        rushing_yards:
+          type: integer
+        rushing_yards_per_game:
+          type: number
+        rushing_average:
+          type: number
+        rushing_touchdowns:
+          type: integer
+        rushing_first_downs:
+          type: integer
+        rushing_first_down_pct:
+          type: number
+        rushing_20_plus_yards:
+          type: integer
+        rushing_40_plus_yards:
+          type: integer
+        rushing_long:
+          type: integer
+        rushing_fumbles:
+          type: integer
+        receptions:
+          type: integer
+        receiving_yards:
+          type: integer
+        receiving_yards_per_game:
+          type: number
+        receiving_average:
+          type: number
+        receiving_touchdowns:
+          type: integer
+        receiving_targets:
+          type: integer
+        receiving_first_downs:
+          type: integer
+        receiving_first_down_pct:
+          type: number
+        receiving_20_plus_yards:
+          type: integer
+        receiving_40_plus_yards:
+          type: integer
+        receiving_long:
+          type: integer
+        receiving_fumbles:
+          type: integer
+        fumbles:
+          type: integer
+        fumbles_lost:
+          type: integer
+        fumbles_forced:
+          type: integer
+        fumbles_recovered:
+          type: integer
+        fumbles_touchdowns:
+          type: integer
+
+    NFLAdvancedRushingStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        season:
+          type: integer
+        week:
+          type: integer
+        postseason:
+          type: boolean
+        avg_time_to_los:
+          type: number
+        expected_rush_yards:
+          type: number
+        rush_attempts:
+          type: integer
+        rush_pct_over_expected:
+          type: number
+        rush_touchdowns:
+          type: integer
+        rush_yards:
+          type: integer
+        rush_yards_over_expected:
+          type: number
+        rush_yards_over_expected_per_att:
+          type: number
+        efficiency:
+          type: number
+        percent_attempts_gte_eight_defenders:
+          type: number
+        avg_rush_yards:
+          type: number
+
+    NFLAdvancedPassingStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        season:
+          type: integer
+        week:
+          type: integer
+        postseason:
+          type: boolean
+        aggressiveness:
+          type: number
+        attempts:
+          type: integer
+        avg_air_distance:
+          type: number
+        avg_air_yards_differential:
+          type: number
+        avg_air_yards_to_sticks:
+          type: number
+        avg_completed_air_yards:
+          type: number
+        avg_intended_air_yards:
+          type: number
+        avg_time_to_throw:
+          type: number
+        completion_percentage:
+          type: number
+        completion_percentage_above_expectation:
+          type: number
+        completions:
+          type: integer
+        expected_completion_percentage:
+          type: number
+        games_played:
+          type: number
+        interceptions:
+          type: number
+        max_air_distance:
+          type: number
+        max_completed_air_distance:
+          type: number
+        pass_touchdowns:
+          type: number
+        pass_yards:
+          type: number
+        passer_rating:
+          type: number
+
+    NFLAdvancedReceivingStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/NFLPlayer"
+        season:
+          type: integer
+        week:
+          type: integer
+        postseason:
+          type: boolean
+        avg_cushion:
+          type: number
+        avg_expected_yac:
+          type: number
+        avg_intended_air_yards:
+          type: number
+        avg_separation:
+          type: number
+        avg_yac:
+          type: number
+        avg_yac_above_expectation:
+          type: number
+        catch_percentage:
+          type: number
+        percent_share_of_intended_air_yards:
+          type: number
+        rec_touchdowns:
+          type: integer
+        receptions:
+          type: integer
+        targets:
+          type: integer
+        yards:
+          type: integer
+
+    MLBTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        abbreviation:
+          type: string
+        display_name:
+          type: string
+        short_display_name:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        league:
+          type: string
+          enum: [American, National]
+        division:
+          type: string
+          enum: [East, Central, West]
+
+    MLBPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        full_name:
+          type: string
+        debut_year:
+          type: integer
+          nullable: true
+        jersey:
+          type: string
+        college:
+          type: string
+        position:
+          type: string
+        active:
+          type: boolean
+        birth_place:
+          type: string
+        dob:
+          type: string
+        age:
+          type: integer
+          nullable: true
+        height:
+          type: string
+        weight:
+          type: string
+        draft:
+          type: string
+        bats_throws:
+          type: string
+        team:
+          $ref: "#/components/schemas/MLBTeam"
+
+    MLBGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        home_team_name:
+          type: string
+        away_team_name:
+          type: string
+        home_team:
+          $ref: "#/components/schemas/MLBTeam"
+        away_team:
+          $ref: "#/components/schemas/MLBTeam"
+        season:
+          type: integer
+        postseason:
+          type: boolean
+        date:
+          type: string
+          format: date-time
+        home_team_data:
+          type: object
+          properties:
+            hits:
+              type: integer
+            runs:
+              type: integer
+            errors:
+              type: integer
+            inning_scores:
+              type: array
+              items:
+                type: integer
+        away_team_data:
+          type: object
+          properties:
+            hits:
+              type: integer
+            runs:
+              type: integer
+            errors:
+              type: integer
+            inning_scores:
+              type: array
+              items:
+                type: integer
+        venue:
+          type: string
+        attendance:
+          type: integer
+        conference_play:
+          type: boolean
+        period:
+          type: integer
+          nullable: true
+        clock:
+          type: string
+          nullable: true
+        display_clock:
+          type: string
+          nullable: true
+        scoring_summary:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+
+    MLBStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/MLBPlayer"
+        game:
+          $ref: "#/components/schemas/MLBGame"
+        team_name:
+          type: string
+        at_bats:
+          type: integer
+        runs:
+          type: integer
+        hits:
+          type: integer
+        rbi:
+          type: integer
+        hr:
+          type: integer
+        bb:
+          type: integer
+        k:
+          type: integer
+        avg:
+          type: number
+        obp:
+          type: number
+        slg:
+          type: number
+        ip:
+          type: number
+        p_hits:
+          type: integer
+        p_runs:
+          type: integer
+        er:
+          type: integer
+        p_bb:
+          type: integer
+        p_k:
+          type: integer
+        p_hr:
+          type: integer
+        pitch_count:
+          type: integer
+        strikes:
+          type: integer
+        era:
+          type: number
+
+    MLBStandings:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/MLBTeam"
+        league_name:
+          type: string
+        league_short_name:
+          type: string
+        division_name:
+          type: string
+        division_short_name:
+          type: string
+        wins:
+          type: integer
+        losses:
+          type: integer
+        win_percent:
+          type: number
+        games_behind:
+          type: number
+        streak:
+          type: integer
+        last_ten_games:
+          type: string
+        season:
+          type: integer
+        clinch_indicator:
+          type: string
+        elimination_number:
+          type: integer
+        wild_card_elimination_number:
+          type: integer
+        league_rank:
+          type: integer
+        sport_rank:
+          type: integer
+        division_rank:
+          type: integer
+        league_games_back:
+          type: number
+        sport_games_back:
+          type: number
+        division_games_back:
+          type: number
+        conference_games_back:
+          type: number
+        division_leader:
+          type: boolean
+        division_champ:
+          type: boolean
+        runs_allowed:
+          type: integer
+        runs_scored:
+          type: integer
+        run_differential:
+          type: integer
+        home_wins:
+          type: integer
+        home_losses:
+          type: integer
+        away_wins:
+          type: integer
+        away_losses:
+          type: integer
+        last_updated:
+          type: string
+        records:
+          type: object
+        day_wins:
+          type: integer
+        day_losses:
+          type: integer
+        night_wins:
+          type: integer
+        night_losses:
+          type: integer
+        one_run_wins:
+          type: integer
+        one_run_losses:
+          type: integer
+        extra_inning_wins:
+          type: integer
+        extra_inning_losses:
+          type: integer
+
+    MLBSeasonStats:
+      type: object
+      properties:
+        player:
+          $ref: "#/components/schemas/MLBPlayer"
+        team_name:
+          type: string
+        season:
+          type: integer
+        postseason:
+          type: boolean
+        batting_gp:
+          type: integer
+        batting_ab:
+          type: integer
+        batting_r:
+          type: integer
+        batting_h:
+          type: integer
+        batting_avg:
+          type: number
+        batting_2b:
+          type: integer
+        batting_3b:
+          type: integer
+        batting_hr:
+          type: integer
+        batting_rbi:
+          type: integer
+        batting_tb:
+          type: integer
+        batting_bb:
+          type: integer
+        batting_so:
+          type: integer
+        batting_sb:
+          type: integer
+        batting_obp:
+          type: number
+        batting_slg:
+          type: number
+        batting_ops:
+          type: number
+        batting_war:
+          type: number
+        pitching_gp:
+          type: integer
+        pitching_gs:
+          type: integer
+        pitching_qs:
+          type: integer
+        pitching_w:
+          type: integer
+        pitching_l:
+          type: integer
+        pitching_era:
+          type: number
+        pitching_sv:
+          type: integer
+        pitching_hld:
+          type: integer
+        pitching_ip:
+          type: number
+        pitching_h:
+          type: integer
+        pitching_er:
+          type: integer
+        pitching_hr:
+          type: integer
+        pitching_bb:
+          type: integer
+        pitching_whip:
+          type: number
+        pitching_k:
+          type: integer
+        pitching_k_per_9:
+          type: number
+        pitching_war:
+          type: number
+        fielding_gp:
+          type: integer
+        fielding_gs:
+          type: integer
+        fielding_fip:
+          type: number
+        fielding_tc:
+          type: integer
+        fielding_po:
+          type: integer
+        fielding_a:
+          type: integer
+        fielding_fp:
+          type: number
+        fielding_e:
+          type: integer
+        fielding_dp:
+          type: integer
+        fielding_rf:
+          type: number
+        fielding_dwar:
+          type: number
+        fielding_pb:
+          type: integer
+        fielding_cs:
+          type: integer
+        fielding_cs_percent:
+          type: number
+        fielding_sba:
+          type: integer
+
+    MLBTeamSeasonStats:
+      type: object
+      properties:
+        team:
+          $ref: "#/components/schemas/MLBTeam"
+        team_name:
+          type: string
+        postseason:
+          type: boolean
+        season:
+          type: integer
+        gp:
+          type: integer
+        batting_ab:
+          type: integer
+        batting_r:
+          type: integer
+        batting_h:
+          type: integer
+        batting_2b:
+          type: integer
+        batting_3b:
+          type: integer
+        batting_hr:
+          type: integer
+        batting_rbi:
+          type: integer
+        batting_tb:
+          type: integer
+        batting_bb:
+          type: integer
+        batting_so:
+          type: integer
+        batting_sb:
+          type: integer
+        batting_avg:
+          type: number
+        batting_obp:
+          type: number
+        batting_slg:
+          type: number
+        batting_ops:
+          type: number
+        pitching_w:
+          type: integer
+        pitching_l:
+          type: integer
+        pitching_era:
+          type: number
+        pitching_sv:
+          type: integer
+        pitching_cg:
+          type: integer
+        pitching_sho:
+          type: integer
+        pitching_qs:
+          type: integer
+        pitching_ip:
+          type: number
+        pitching_h:
+          type: integer
+        pitching_er:
+          type: integer
+        pitching_hr:
+          type: integer
+        pitching_bb:
+          type: integer
+        pitching_k:
+          type: integer
+        pitching_oba:
+          type: number
+        pitching_whip:
+          type: number
+        fielding_e:
+          type: integer
+        fielding_fp:
+          type: number
+        fielding_tc:
+          type: integer
+        fielding_po:
+          type: integer
+        fielding_a:
+          type: integer
+
+    EPLPlayerStatEnum:
+      type: string
+      enum: &PLAYER_STAT_TYPES [
+        "goals",
+        "goal_assist",
+        "clean_sheet",
+        "appearances",
+        "mins_played",
+        "yellow_card",
+        "red_card",
+        "total_pass",
+        "touches",
+        "total_scoring_att",
+        "hit_woodwork",
+        "big_chance_missed",
+        "total_offside",
+        "total_tackle",
+        "fouls",
+        "dispossessed",
+        "own_goals",
+        "total_clearance",
+        "clearance_off_line",
+        "saves",
+        "penalty_save", 
+        "total_high_claim",
+        "punches"
+      ]
+
+    EPLTeamStatEnum:
+      type: string  
+      enum: &TEAM_STAT_TYPES [
+        "wins",
+        "losses",
+        "touches",
+        "own_goals",
+        "total_yel_card",
+        "total_red_card",
+        "goals",
+        "total_pass",
+        "total_scoring_att",
+        "total_offside",
+        "hit_woodwork",
+        "big_chance_missed",
+        "total_tackle",
+        "total_clearance",
+        "clearance_off_line",
+        "dispossessed",
+        "clean_sheet",
+        "saves",
+        "penalty_save",
+        "total_high_claim",
+        "punches"
+      ]
+
+    EPLTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        short_name:
+          type: string
+        abbr:
+          type: string
+        city:
+          type: string
+        stadium:
+          type: string
+
+    EPLPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        position:
+          type: string
+          nullable: true
+        national_team:
+          type: string
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        weight:
+          type: integer
+          nullable: true
+        birth_date:
+          type: string
+          format: date-time
+          nullable: true
+        age:
+          type: string
+          nullable: true
+        name:
+          type: string
+        first_name:
+          type: string
+          nullable: true
+        last_name:
+          type: string
+          nullable: true
+        team_ids:
+          type: array
+          nullable: true
+          items:
+            type: integer
+
+    EPLTeamSeasonStat:
+      type: object
+      properties:
+        value:
+          type: number
+        name:
+          type: string
+        rank:
+          type: integer
+        season:
+          type: integer
+
+    EPLPlayerSeasonStat:
+      type: object
+      properties:
+        value:
+          type: number
+        name:
+          type: string
+        rank:
+          type: integer
+        season:
+          type: integer
+
+    EPLGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        week:
+          type: integer
+        kickoff:
+          type: string
+          format: date-time
+          nullable: true
+        provisional_kickoff:
+          type: string
+          format: date-time
+          nullable: true
+        home_team_id:
+          type: integer
+        away_team_id:
+          type: integer
+        home_score:
+          type: integer
+          nullable: true
+        away_score:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        season:
+          type: integer
+        ground:
+          type: string
+          nullable: true
+        clock:
+          type: integer
+          nullable: true
+        clock_display:
+          type: string
+          nullable: true
+        extra_time:
+          type: boolean
+          nullable: true
+
+    EPLGameLineup:
+      type: object
+      properties:
+        team_id:
+          type: integer
+        player:
+          $ref: '#/components/schemas/EPLPlayer'
+        substitute:
+          type: boolean
+        captain:
+          type: boolean
+        position:
+          type: string
+          nullable: true
+        shirt_number:
+          type: integer
+          nullable: true
+        sub_clock:
+          type: integer
+          nullable: true
+        sub_clock_display:
+          type: string
+          nullable: true
+
+    EPLGameGoal:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        scorer:
+          $ref: '#/components/schemas/EPLPlayer'
+        assister:
+          $ref: '#/components/schemas/EPLPlayer'
+          nullable: true
+        clock:
+          type: integer
+        clock_display:
+          type: string
+          nullable: true
+        phase:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+
+    EPLGameTeamStats:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        teams:
+          type: array
+          items:
+            type: object
+            properties:
+              team_id:
+                type: integer
+              stats:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: number
+
+    EPLGamePlayerStats:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        players:
+          type: array
+          items:
+            type: object
+            properties:
+              team_id:
+                type: integer
+              player_id:
+                type: integer
+              stats:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: number
+
+    EPLStanding:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/EPLTeam'
+        season:
+          type: integer
+        position:
+          type: integer
+        form:
+          type: string
+        home_played:
+          type: integer
+        home_drawn:
+          type: integer
+        home_won:
+          type: integer
+        home_lost:
+          type: integer
+        home_goals_against:
+          type: integer
+        home_goals_difference:
+          type: integer
+        home_goals_for:
+          type: integer
+        home_points:
+          type: integer
+        away_played:
+          type: integer
+        away_drawn:
+          type: integer
+        away_won:
+          type: integer
+        away_lost:
+          type: integer
+        away_goals_against:
+          type: integer
+        away_goals_difference:
+          type: integer
+        away_goals_for:
+          type: integer
+        away_points:
+          type: integer
+        overall_played:
+          type: integer
+        overall_drawn:
+          type: integer
+        overall_won:
+          type: integer
+        overall_lost:
+          type: integer
+        overall_goals_against:
+          type: integer
+        overall_goals_difference:
+          type: integer
+        overall_goals_for:
+          type: integer
+        overall_points:
+          type: integer
+
+    EPLPlayerStatLeaders:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/EPLPlayer'
+        season:
+          type: integer
+        rank:
+          type: integer
+        value:
+          type: number
+        name:
+          type: string
+
+    EPLTeamStatLeaders:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/EPLTeam'
+        season:
+          type: integer
+        rank:
+          type: integer
+        value:
+          type: number
+        name:
+          type: string
+
+    WNBATeam:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Team ID
+        conference:
+          type: string
+          description: Conference name
+        city:
+          type: string
+          description: Team city
+        name:
+          type: string
+          description: Team name
+        full_name:
+          type: string
+          description: Team full name
+        abbreviation:
+          type: string
+          description: Team abbreviation
+
+    WNBAPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Player ID
+        first_name:
+          type: string
+          description: Player first name
+        last_name:
+          type: string
+          description: Player last name
+        position:
+          type: string
+          description: Player position
+        position_abbreviation:
+          type: string
+          description: Player position abbreviation
+        height:
+          type: string
+          description: Player height
+        weight:
+          type: string
+          description: Player weight
+        jersey_number:
+          type: string
+          description: Player jersey number
+        college:
+          type: string
+          description: Player college
+        age:
+          type: integer
+          description: Player age
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+
+    WNBAGame:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Game ID
+        date:
+          type: string
+          format: date-time
+          description: Game date and time
+        season:
+          type: integer
+          description: Season year
+        postseason:
+          type: boolean
+          description: Whether this is a postseason game
+        status:
+          type: string
+          description: Game status
+        period:
+          type: integer
+          description: Current period
+        time:
+          type: string
+          description: Time remaining in period
+        home_team:
+          $ref: '#/components/schemas/WNBATeam'
+        visitor_team:
+          $ref: '#/components/schemas/WNBATeam'
+        home_score:
+          type: integer
+          description: Home team score
+        away_score:
+          type: integer
+          description: Away team score
+
+    WNBAPlayerStat:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/WNBAPlayer'
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+        game:
+          type: object
+          properties:
+            id:
+              type: integer
+            date:
+              type: string
+              format: date-time
+            season:
+              type: integer
+        min:
+          type: string
+          description: Minutes played
+        fgm:
+          type: integer
+          description: Field goals made
+        fga:
+          type: integer
+          description: Field goals attempted
+        fg3m:
+          type: integer
+          description: Three-pointers made
+        fg3a:
+          type: integer
+          description: Three-pointers attempted
+        ftm:
+          type: integer
+          description: Free throws made
+        fta:
+          type: integer
+          description: Free throws attempted
+        oreb:
+          type: integer
+          description: Offensive rebounds
+        dreb:
+          type: integer
+          description: Defensive rebounds
+        reb:
+          type: integer
+          description: Total rebounds
+        ast:
+          type: integer
+          description: Assists
+        stl:
+          type: integer
+          description: Steals
+        blk:
+          type: integer
+          description: Blocks
+        turnover:
+          type: integer
+          description: Turnovers
+        pf:
+          type: integer
+          description: Personal fouls
+        pts:
+          type: integer
+          description: Points scored
+        plus_minus:
+          type: integer
+          description: Plus/minus rating
+
+    WNBATeamStat:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+        game:
+          type: object
+          properties:
+            id:
+              type: integer
+            date:
+              type: string
+              format: date-time
+            season:
+              type: integer
+        fgm:
+          type: integer
+          description: Field goals made
+        fga:
+          type: integer
+          description: Field goals attempted
+        fg_pct:
+          type: number
+          description: Field goal percentage
+        fg3m:
+          type: integer
+          description: Three-pointers made
+        fg3a:
+          type: integer
+          description: Three-pointers attempted
+        fg3_pct:
+          type: number
+          description: Three-point percentage
+        ftm:
+          type: integer
+          description: Free throws made
+        fta:
+          type: integer
+          description: Free throws attempted
+        ft_pct:
+          type: number
+          description: Free throw percentage
+        oreb:
+          type: integer
+          description: Offensive rebounds
+        dreb:
+          type: integer
+          description: Defensive rebounds
+        reb:
+          type: integer
+          description: Total rebounds
+        ast:
+          type: integer
+          description: Assists
+        stl:
+          type: integer
+          description: Steals
+        blk:
+          type: integer
+          description: Blocks
+        turnovers:
+          type: integer
+          description: Turnovers
+        fouls:
+          type: integer
+          description: Team fouls
+
+    WNBAPlayerSeasonStat:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/WNBAPlayer'
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+        season:
+          type: integer
+          description: Season year
+        season_type:
+          type: integer
+          description: Season type (2=regular, 3=playoffs)
+        games_played:
+          type: integer
+          description: Games played
+        min:
+          type: number
+          description: Average minutes per game
+        fgm:
+          type: number
+          description: Average field goals made
+        fga:
+          type: number
+          description: Average field goals attempted
+        fg_pct:
+          type: number
+          description: Field goal percentage
+        fg3m:
+          type: number
+          description: Average three-pointers made
+        fg3a:
+          type: number
+          description: Average three-pointers attempted
+        fg3_pct:
+          type: number
+          description: Three-point percentage
+        ftm:
+          type: number
+          description: Average free throws made
+        fta:
+          type: number
+          description: Average free throws attempted
+        ft_pct:
+          type: number
+          description: Free throw percentage
+        reb:
+          type: number
+          description: Average rebounds
+        ast:
+          type: number
+          description: Average assists
+        stl:
+          type: number
+          description: Average steals
+        blk:
+          type: number
+          description: Average blocks
+        turnover:
+          type: number
+          description: Average turnovers
+        pts:
+          type: number
+          description: Average points
+
+    WNBATeamSeasonStat:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+        season:
+          type: integer
+          description: Season year
+        season_type:
+          type: integer
+          description: Season type (2=regular, 3=playoffs)
+        games_played:
+          type: integer
+          description: Games played
+        fgm:
+          type: number
+          description: Average field goals made
+        fga:
+          type: number
+          description: Average field goals attempted
+        fg_pct:
+          type: number
+          description: Field goal percentage
+        fg3m:
+          type: number
+          description: Average three-pointers made
+        fg3a:
+          type: number
+          description: Average three-pointers attempted
+        fg3_pct:
+          type: number
+          description: Three-point percentage
+        ftm:
+          type: number
+          description: Average free throws made
+        fta:
+          type: number
+          description: Average free throws attempted
+        ft_pct:
+          type: number
+          description: Free throw percentage
+        oreb:
+          type: number
+          description: Average offensive rebounds
+        dreb:
+          type: number
+          description: Average defensive rebounds
+        reb:
+          type: number
+          description: Average total rebounds
+        ast:
+          type: number
+          description: Average assists
+        stl:
+          type: number
+          description: Average steals
+        blk:
+          type: number
+          description: Average blocks
+        turnover:
+          type: number
+          description: Average turnovers
+        pts:
+          type: number
+          description: Average points
+
+    WNBAStanding:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+        season:
+          type: integer
+          description: Season year
+        conference:
+          type: string
+          description: Conference name
+        wins:
+          type: integer
+          description: Number of wins
+        losses:
+          type: integer
+          description: Number of losses
+        win_percentage:
+          type: number
+          description: Win percentage
+        games_behind:
+          type: number
+          description: Games behind leader
+        home_record:
+          type: string
+          description: Home record
+        away_record:
+          type: string
+          description: Away record
+        conference_record:
+          type: string
+          description: Conference record
+        playoff_seed:
+          type: integer
+          description: Playoff seed
+
+    WNBAPlayerInjury:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/WNBAPlayer'
+        status:
+          type: string
+          description: Injury status
+        return_date:
+          type: string
+          description: Estimated return date
+        comment:
+          type: string
+          description: Injury details
+
+    WNBAPlay:
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: Game ID
+        order:
+          type: integer
+          description: Play order number (starts at 1 and increments sequentially)
+        type:
+          type: string
+          description: Play type
+        text:
+          type: string
+          description: Play description
+        home_score:
+          type: integer
+          description: Home team score after play
+        away_score:
+          type: integer
+          description: Away team score after play
+        period:
+          type: integer
+          description: Period number
+        clock:
+          type: string
+          description: Game clock
+        scoring_play:
+          type: boolean
+          description: Whether this is a scoring play
+        score_value:
+          type: integer
+          description: Points scored on this play
+        team:
+          $ref: '#/components/schemas/WNBATeam'
+
+    # NHL Components
+    NHLTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        tricode:
+          type: string
+        conference_name:
+          type: string
+          nullable: true
+        division_name:
+          type: string
+          nullable: true
+        season:
+          type: integer
+          nullable: true
+
+    NHLPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        full_name:
+          type: string
+          nullable: true
+        position_code:
+          type: string
+        shoots_catches:
+          type: string
+          nullable: true
+        height_in_inches:
+          type: integer
+          nullable: true
+        weight_in_pounds:
+          type: integer
+          nullable: true
+        birth_date:
+          type: string
+          nullable: true
+        birth_place:
+          type: string
+          nullable: true
+        headshot_url:
+          type: string
+          nullable: true
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/NHLTeam'
+          nullable: true
+        sweater_number:
+          type: integer
+          nullable: true
+
+    NHLGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        season:
+          type: integer
+        game_date:
+          type: string
+          format: date
+        start_time_utc:
+          type: string
+          nullable: true
+        home_team:
+          $ref: '#/components/schemas/NHLTeam'
+        away_team:
+          $ref: '#/components/schemas/NHLTeam'
+        home_sog:
+          type: integer
+          nullable: true
+        away_sog:
+          type: integer
+          nullable: true
+        home_score:
+          type: integer
+          nullable: true
+        away_score:
+          type: integer
+          nullable: true
+        venue:
+          type: string
+          nullable: true
+        venue_location:
+          type: string
+          nullable: true
+        game_state:
+          type: string
+          nullable: true
+        period:
+          type: integer
+          nullable: true
+        time_remaining:
+          type: string
+          nullable: true
+        postseason:
+          type: boolean
+
+    NHLStanding:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NHLTeam'
+        season:
+          type: integer
+        conference_name:
+          type: string
+        division_name:
+          type: string
+        games_played:
+          type: integer
+        points:
+          type: integer
+        regulation_wins:
+          type: integer
+        regulation_plus_ot_wins:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+        ot_losses:
+          type: integer
+        points_pctg:
+          type: number
+        goals_for:
+          type: integer
+        goals_against:
+          type: integer
+        goal_differential:
+          type: integer
+        home_record:
+          type: string
+        road_record:
+          type: string
+        streak:
+          type: string
+          nullable: true
+
+    NHLBoxScore:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/NHLPlayer'
+        team:
+          $ref: '#/components/schemas/NHLTeam'
+        game:
+          $ref: '#/components/schemas/NHLGame'
+        position:
+          type: string
+        goals:
+          type: integer
+          nullable: true
+        assists:
+          type: integer
+          nullable: true
+        points:
+          type: integer
+          nullable: true
+        plus_minus:
+          type: integer
+          nullable: true
+        penalty_minutes:
+          type: integer
+          nullable: true
+        power_play_goals:
+          type: integer
+          nullable: true
+        shots_on_goal:
+          type: integer
+          nullable: true
+        faceoff_winning_pctg:
+          type: number
+          nullable: true
+        time_on_ice:
+          type: string
+          nullable: true
+        blocked_shots:
+          type: integer
+          nullable: true
+        hits:
+          type: integer
+          nullable: true
+        shifts:
+          type: integer
+          nullable: true
+        giveaways:
+          type: integer
+          nullable: true
+        takeaways:
+          type: integer
+          nullable: true
+        sweater_number:
+          type: integer
+          nullable: true
+        saves:
+          type: integer
+          nullable: true
+        shots_against:
+          type: integer
+          nullable: true
+        save_pctg:
+          type: number
+          nullable: true
+        goals_against:
+          type: integer
+          nullable: true
+        starter:
+          type: boolean
+          nullable: true
+        decision:
+          type: string
+          nullable: true
+
+    NHLPlayerSeasonStat:
+      type: object
+      properties:
+        value:
+          type: number
+        name:
+          type: string
+
+    NHLTeamSeasonStat:
+      type: object
+      properties:
+        value:
+          type: number
+        name:
+          type: string
+
+    NHLPlayerStatLeader:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/NHLPlayer'
+        name:
+          type: string
+        value:
+          type: number
+        season:
+          type: integer
+        postseason:
+          type: boolean
+
+    NHLTeamStatLeader:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NHLTeam'
+        name:
+          type: string
+        value:
+          type: number
+        season:
+          type: integer
+        postseason:
+          type: boolean
+
+    # NCAAF Components
+    NCAAFConference:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        abbreviation:
+          type: string
+
+    NCAAFTeam:
+      type: object
+      properties:
+        id:
+          type: integer
+        conference:
+          type: string
+        city:
+          type: string
+        name:
+          type: string
+        full_name:
+          type: string
+        abbreviation:
+          type: string
+
+    NCAAFPlayer:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        position:
+          type: string
+          nullable: true
+        position_abbreviation:
+          type: string
+          nullable: true
+        height:
+          type: string
+          nullable: true
+        weight:
+          type: string
+          nullable: true
+        jersey_number:
+          type: string
+          nullable: true
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+
+    NCAAFGame:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        season:
+          type: integer
+        week:
+          type: integer
+        status:
+          type: string
+          nullable: true
+        period:
+          type: integer
+        time:
+          type: string
+          nullable: true
+        home_team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        visitor_team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        home_score_q1:
+          type: integer
+          nullable: true
+        home_score_q2:
+          type: integer
+          nullable: true
+        home_score_q3:
+          type: integer
+          nullable: true
+        home_score_q4:
+          type: integer
+          nullable: true
+        home_score_ot:
+          type: integer
+          nullable: true
+        away_score_q1:
+          type: integer
+          nullable: true
+        away_score_q2:
+          type: integer
+          nullable: true
+        away_score_q3:
+          type: integer
+          nullable: true
+        away_score_q4:
+          type: integer
+          nullable: true
+        away_score_ot:
+          type: integer
+          nullable: true
+        home_score:
+          type: integer
+        away_score:
+          type: integer
+
+    NCAAFStanding:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        conference:
+          $ref: '#/components/schemas/NCAAFConference'
+        season:
+          type: integer
+        wins:
+          type: integer
+        losses:
+          type: integer
+        win_percentage:
+          type: number
+          nullable: true
+        games_behind:
+          type: number
+          nullable: true
+        home_record:
+          type: string
+          nullable: true
+        away_record:
+          type: string
+          nullable: true
+        conference_record:
+          type: string
+          nullable: true
+
+    NCAAFRanking:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        season:
+          type: integer
+        week:
+          type: integer
+        rank:
+          type: integer
+        first_place_votes:
+          type: integer
+          nullable: true
+        points:
+          type: integer
+          nullable: true
+        trend:
+          type: string
+          nullable: true
+        record:
+          type: string
+          nullable: true
+
+    NCAAFPlayerStat:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/NCAAFPlayer'
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        game:
+          $ref: '#/components/schemas/NCAAFGame'
+        passing_completions:
+          type: integer
+          nullable: true
+        passing_attempts:
+          type: integer
+          nullable: true
+        passing_yards:
+          type: integer
+          nullable: true
+        passing_touchdowns:
+          type: integer
+          nullable: true
+        passing_interceptions:
+          type: integer
+          nullable: true
+        passing_qbr:
+          type: number
+          nullable: true
+        passing_rating:
+          type: number
+          nullable: true
+        rushing_attempts:
+          type: integer
+          nullable: true
+        rushing_yards:
+          type: integer
+          nullable: true
+        rushing_touchdowns:
+          type: integer
+          nullable: true
+        rushing_long:
+          type: integer
+          nullable: true
+        receptions:
+          type: integer
+          nullable: true
+        receiving_yards:
+          type: integer
+          nullable: true
+        receiving_touchdowns:
+          type: integer
+          nullable: true
+        receiving_targets:
+          type: integer
+          nullable: true
+        receiving_long:
+          type: integer
+          nullable: true
+        total_tackles:
+          type: integer
+          nullable: true
+        solo_tackles:
+          type: integer
+          nullable: true
+        tackles_for_loss:
+          type: number
+          nullable: true
+        sacks:
+          type: number
+          nullable: true
+        interceptions:
+          type: integer
+          nullable: true
+        passes_defended:
+          type: integer
+          nullable: true
+
+    NCAAFTeamStat:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        game:
+          type: object
+          properties:
+            id:
+              type: integer
+            date:
+              type: string
+              format: date-time
+            season:
+              type: integer
+            week:
+              type: integer
+        first_downs:
+          type: integer
+          nullable: true
+        third_down_efficiency:
+          type: string
+          nullable: true
+        fourth_down_efficiency:
+          type: string
+          nullable: true
+        passing_yards:
+          type: integer
+          nullable: true
+        rushing_yards:
+          type: integer
+          nullable: true
+        total_yards:
+          type: integer
+          nullable: true
+        turnovers:
+          type: integer
+          nullable: true
+        penalties:
+          type: integer
+          nullable: true
+        penalty_yards:
+          type: integer
+          nullable: true
+        possession_time:
+          type: string
+          nullable: true
+
+    NCAAFPlayerSeasonStat:
+      type: object
+      properties:
+        player:
+          $ref: '#/components/schemas/NCAAFPlayer'
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        season:
+          type: integer
+        passing_completions:
+          type: integer
+          nullable: true
+        passing_attempts:
+          type: integer
+          nullable: true
+        passing_yards:
+          type: integer
+          nullable: true
+        passing_touchdowns:
+          type: integer
+          nullable: true
+        passing_interceptions:
+          type: integer
+          nullable: true
+        passing_yards_per_game:
+          type: number
+          nullable: true
+        passing_rating:
+          type: number
+          nullable: true
+        rushing_attempts:
+          type: integer
+          nullable: true
+        rushing_yards:
+          type: integer
+          nullable: true
+        rushing_touchdowns:
+          type: integer
+          nullable: true
+        rushing_yards_per_game:
+          type: number
+          nullable: true
+        rushing_avg:
+          type: number
+          nullable: true
+        receptions:
+          type: integer
+          nullable: true
+        receiving_yards:
+          type: integer
+          nullable: true
+        receiving_touchdowns:
+          type: integer
+          nullable: true
+        receiving_yards_per_game:
+          type: number
+          nullable: true
+        receiving_avg:
+          type: number
+          nullable: true
+        total_tackles:
+          type: integer
+          nullable: true
+        solo_tackles:
+          type: integer
+          nullable: true
+        tackles_for_loss:
+          type: number
+          nullable: true
+        sacks:
+          type: number
+          nullable: true
+        interceptions:
+          type: integer
+          nullable: true
+        passes_defended:
+          type: integer
+          nullable: true
+
+    NCAAFTeamSeasonStat:
+      type: object
+      properties:
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+        season:
+          type: integer
+        passing_yards:
+          type: number
+          nullable: true
+        passing_yards_per_game:
+          type: number
+          nullable: true
+        passing_touchdowns:
+          type: number
+          nullable: true
+        passing_interceptions:
+          type: number
+          nullable: true
+        passing_qb_rating:
+          type: number
+          nullable: true
+        rushing_yards:
+          type: number
+          nullable: true
+        rushing_yards_per_game:
+          type: number
+          nullable: true
+        rushing_touchdowns:
+          type: number
+          nullable: true
+        receiving_yards:
+          type: number
+          nullable: true
+        receiving_touchdowns:
+          type: number
+          nullable: true
+        opp_passing_yards:
+          type: number
+          nullable: true
+        opp_rushing_yards:
+          type: number
+          nullable: true
+
+    NCAAFPlay:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        order:
+          type: integer
+          description: Play order number (starts at 1 and increments sequentially)
+        type:
+          type: string
+          nullable: true
+        text:
+          type: string
+        home_score:
+          type: integer
+        away_score:
+          type: integer
+        period:
+          type: integer
+        clock:
+          type: string
+          nullable: true
+        scoring_play:
+          type: boolean
+        score_value:
+          type: integer
+          nullable: true
+        team:
+          $ref: '#/components/schemas/NCAAFTeam'
+          nullable: true
+
+  parameters:
+    CursorParam:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: The cursor for pagination
+
+    PerPageParam:
+      name: per_page
+      in: query
+      required: false
+      schema:
+        type: integer
+        maximum: 100
+        default: 25
+      description: Number of results per page
+
+    SeasonParam:
+      name: season
+      in: query
+      required: true
+      schema:
+        type: integer
+      description: The season year
+
+    SeasonOptionalParam:
+      name: season
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: The season year
+
+    TeamIdsParam:
+      name: team_ids[]
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+      style: form
+      explode: true
+      description: Filter by team IDs
+
+    PlayerIdsParam:
+      name: player_ids[]
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+      style: form
+      explode: true
+      description: Filter by player IDs
+
+    DatesParam:
+      name: dates[]
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          format: date
+      style: form
+      explode: true
+      description: Filter by dates (YYYY-MM-DD)
+
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    BadRequestError:
+      description: Bad Request - Invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    RateLimitError:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+paths:
+  /nba/v1/teams:
+    get:
+      summary: Get NBA teams
+      tags: [NBA]
+      parameters:
+        - name: division
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by division
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by conference
+      responses:
+        "200":
+          description: List of NBA teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBATeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/teams/{id}:
+    get:
+      summary: Get specific NBA team
+      tags: [NBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NBATeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/players:
+    get:
+      summary: Get NBA players
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of NBA players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/players/{id}:
+    get:
+      summary: Get specific NBA player
+      tags: [NBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NBAPlayer"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/games:
+    get:
+      summary: Get NBA games
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/DatesParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by postseason games
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games before this date
+      responses:
+        "200":
+          description: List of NBA games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/games/{id}:
+    get:
+      summary: Get specific NBA game
+      tags: [NBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NBAGame"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/stats:
+    get:
+      summary: Get NBA stats
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - $ref: "#/components/parameters/DatesParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by postseason stats
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats before this date
+      responses:
+        "200":
+          description: List of NBA stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/season_averages:
+    get:
+      summary: Get NBA season averages
+      tags: [NBA]
+      parameters:
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: player_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Season averages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBASeasonAverages"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/season_averages/{type}:
+    get:
+      summary: Get NBA season averages by type
+      tags: [NBA]
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [general, clutch, defense, shooting]
+          description: Season average type
+        - name: player_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by player IDs
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: season_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [regular, playoffs, ist, playin]
+          description: Season type
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Statistics type
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+      responses:
+        "200":
+          description: Season averages by type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBASeasonAverageV2"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/standings:
+    get:
+      summary: Get NBA team standings
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/SeasonParam"
+      responses:
+        "200":
+          description: Team standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAStandings"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/players/active:
+    get:
+      summary: Get active NBA players
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of active NBA players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/player_injuries:
+    get:
+      summary: Get NBA player injuries
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+      responses:
+        "200":
+          description: List of NBA player injuries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAPlayerInjury"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/box_scores/live:
+    get:
+      summary: Get live NBA box scores
+      tags: [NBA]
+      responses:
+        "200":
+          description: Live NBA box scores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBABoxScore"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/box_scores:
+    get:
+      summary: Get NBA box scores for a specific date
+      tags: [NBA]
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Date in YYYY-MM-DD format
+      responses:
+        "200":
+          description: NBA box scores for date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBABoxScore"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/leaders:
+    get:
+      summary: Get NBA stat leaders
+      tags: [NBA]
+      parameters:
+        - name: stat_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [reb, dreb, tov, ast, oreb, min, pts, stl, blk]
+          description: Type of stat to get leaders for
+        - $ref: "#/components/parameters/SeasonParam"
+      responses:
+        "200":
+          description: NBA stat leaders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBALeader"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/stats/advanced:
+    get:
+      summary: Get NBA advanced stats
+      tags: [NBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+        - $ref: "#/components/parameters/DatesParam"
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date for filtering
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date for filtering
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: NBA advanced stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAAdvancedStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/teams:
+    get:
+      summary: Get NFL teams
+      tags: [NFL]
+      parameters:
+        - name: division
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by division
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by conference
+      responses:
+        "200":
+          description: List of NFL teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/teams/{id}:
+    get:
+      summary: Get specific NFL team
+      tags: [NFL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NFLTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/players:
+    get:
+      summary: Get NFL players
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of NFL players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/players/{id}:
+    get:
+      summary: Get specific NFL player
+      tags: [NFL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NFLPlayer"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/players/active:
+    get:
+      summary: Get active NFL players
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of active NFL players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/games:
+    get:
+      summary: Get NFL games
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/DatesParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by postseason games
+        - name: weeks[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by weeks
+      responses:
+        "200":
+          description: List of NFL games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/games/{id}:
+    get:
+      summary: Get specific NFL game
+      tags: [NFL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NFLGame"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/stats:
+    get:
+      summary: Get NFL stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+      responses:
+        "200":
+          description: List of NFL stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/standings:
+    get:
+      summary: Get NFL team standings
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/SeasonParam"
+      responses:
+        "200":
+          description: Team standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLStandings"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/player_injuries:
+    get:
+      summary: Get NFL player injuries
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+      responses:
+        "200":
+          description: List of NFL player injuries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLPlayerInjury"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/season_stats:
+    get:
+      summary: Get NFL season stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/SeasonParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by team ID
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Get postseason stats
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Attribute to sort by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort order
+      responses:
+        "200":
+          description: NFL season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLSeasonStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/advanced_stats/rushing:
+    get:
+      summary: Get NFL advanced rushing stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/SeasonParam"
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by player ID
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week (0 for full season)
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: NFL advanced rushing stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLAdvancedRushingStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/advanced_stats/passing:
+    get:
+      summary: Get NFL advanced passing stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/SeasonParam"
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by player ID
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week (0 for full season)
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: NFL advanced passing stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLAdvancedPassingStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/advanced_stats/receiving:
+    get:
+      summary: Get NFL advanced receiving stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/SeasonParam"
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by player ID
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week (0 for full season)
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: NFL advanced receiving stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLAdvancedReceivingStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/teams:
+    get:
+      summary: Get MLB teams
+      tags: [MLB]
+      parameters:
+        - name: division
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by division
+        - name: league
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by league
+      responses:
+        "200":
+          description: List of MLB teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/teams/{id}:
+    get:
+      summary: Get specific MLB team
+      tags: [MLB]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/MLBTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/players:
+    get:
+      summary: Get MLB players
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of MLB players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/players/{id}:
+    get:
+      summary: Get specific MLB player
+      tags: [MLB]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/MLBPlayer"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/player_injuries:
+    get:
+      summary: Get MLB player injuries
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+      responses:
+        "200":
+          description: List of MLB player injuries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        player:
+                          $ref: "#/components/schemas/MLBPlayer"
+                        date:
+                          type: string
+                          format: date-time
+                        return_date:
+                          type: string
+                          format: date-time
+                        type:
+                          type: string
+                        detail:
+                          type: string
+                        side:
+                          type: string
+                        status:
+                          type: string
+                        long_comment:
+                          type: string
+                        short_comment:
+                          type: string
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/players/active:
+    get:
+      summary: Get active MLB players
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of active MLB players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/games:
+    get:
+      summary: Get MLB games
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/DatesParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter by postseason games
+      responses:
+        "200":
+          description: List of MLB games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/games/{id}:
+    get:
+      summary: Get specific MLB game
+      tags: [MLB]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/MLBGame"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/stats:
+    get:
+      summary: Get MLB stats
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+      responses:
+        "200":
+          description: List of MLB stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/standings:
+    get:
+      summary: Get MLB team standings
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/SeasonParam"
+      responses:
+        "200":
+          description: Team standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBStandings"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/season_stats:
+    get:
+      summary: Get MLB season stats
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/SeasonParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by team ID
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Get postseason stats
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Attribute to sort by
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort order
+      responses:
+        "200":
+          description: MLB season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBSeasonStats"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/teams/season_stats:
+    get:
+      summary: Get MLB team season stats
+      tags: [MLB]
+      parameters:
+        - $ref: "#/components/parameters/SeasonParam"
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by team ID
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Get postseason stats
+      responses:
+        "200":
+          description: MLB team season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MLBTeamSeasonStats"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/teams:
+    get:
+      summary: Get NHL teams
+      tags: [NHL]
+      parameters:
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by conference
+        - name: division
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by division
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+      responses:
+        "200":
+          description: List of NHL teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLTeam"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/teams/{id}:
+    get:
+      summary: Get specific NHL team
+      tags: [NHL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NHLTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/teams/{id}/season_stats:
+    get:
+      summary: Get NHL team season statistics
+      tags: [NHL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: Team season statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLTeamSeasonStat"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/players:
+    get:
+      summary: Get NHL players
+      tags: [NHL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by player name
+        - name: seasons
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by seasons
+      responses:
+        "200":
+          description: List of NHL players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/players/{id}/season_stats:
+    get:
+      summary: Get NHL player season statistics
+      tags: [NHL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: Player season statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLPlayerSeasonStat"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/games:
+    get:
+      summary: Get NHL games
+      tags: [NHL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: dates
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: date
+          description: Filter by specific dates
+        - name: seasons
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by seasons
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by game IDs
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason games
+      responses:
+        "200":
+          description: List of NHL games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/standings:
+    get:
+      summary: Get NHL standings
+      tags: [NHL]
+      parameters:
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Season year
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by conference
+        - name: division
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by division
+      responses:
+        "200":
+          description: NHL standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLStanding"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/box_scores:
+    get:
+      summary: Get NHL box scores
+      tags: [NHL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: dates
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: date
+          description: Filter by specific dates
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          description: Filter by game IDs
+      responses:
+        "200":
+          description: NHL box scores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLBoxScore"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/player_stats/leaders:
+    get:
+      summary: Get NHL player statistical leaders
+      tags: [NHL]
+      parameters:
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [goals, power_play_points, game_winning_goals, plus_minus, even_strength_points, shots_against, goals_against_average, games_played, goals_against, shots, games_started, short_handed_goals, short_handed_points, faceoff_win_pct, assists, save_pct, power_play_goals, time_on_ice_per_game, wins, ot_losses, overtime_goals, penalty_minutes, saves, points, even_strength_goals, shutouts, shooting_pct, time_on_ice, points_per_game, losses]
+          description: Type of statistic
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: NHL player statistical leaders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLPlayerStatLeader"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/team_stats/leaders:
+    get:
+      summary: Get NHL team statistical leaders
+      tags: [NHL]
+      parameters:
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [faceoff_win_percentage, shots_for_per_game, penalty_kill_percentage, goals_against_per_game, games_played, goals_for_per_game, goals_against, points_pct, points, power_play_percentage, shots_against_per_game, goals_for, wins, goal_differential, ot_losses, losses]
+          description: Type of statistic
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats
+      responses:
+        "200":
+          description: NHL team statistical leaders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLTeamStatLeader"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /epl/v1/games:
+    get:
+      summary: Get EPL games
+      tags: [EPL]
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SeasonOptionalParam'
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by team ID
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week
+      responses:
+        "200":
+          description: List of EPL games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLGame'
+                  meta:
+                    $ref: '#/components/schemas/Pagination'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/games/{id}/lineups:
+    get:
+      summary: Get lineups for an EPL game
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game lineups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLGameLineup'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/games/{id}/goals:
+    get:
+      summary: Get goals for an EPL game
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game goals
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLGameGoal'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/games/{id}/team_stats:
+    get:
+      summary: Get team statistics for an EPL game
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game team statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EPLGameTeamStats'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/games/{id}/player_stats:
+    get:
+      summary: Get player statistics for an EPL game
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game player statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EPLGamePlayerStats'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/players:
+        get:
+          summary: Get EPL players
+          tags: [EPL]
+          parameters:
+          - $ref: "#/components/parameters/CursorParam"
+          - $ref: "#/components/parameters/PerPageParam"
+          - $ref: "#/components/parameters/TeamIdsParam"
+          - $ref: "#/components/parameters/PlayerIdsParam"
+          - $ref: "#/components/parameters/SeasonParam"
+          - name: search
+            in: query
+            required: false
+            schema:
+              type: string
+            description: Search by player name
+          - name: first_name
+            in: query
+            required: false
+            schema:
+              type: string
+            description: Filter by first name
+          - name: last_name
+            in: query
+            required: false
+            schema:
+              type: string
+            description: Filter by last name
+
+          responses:
+            "200":
+              description: List of EPL players
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EPLPlayer'
+                      meta:
+                        $ref: '#/components/schemas/Pagination'
+            "401":
+              $ref: '#/components/responses/UnauthorizedError'
+            "400":
+              $ref: '#/components/responses/BadRequestError'
+            "429":
+              $ref: '#/components/responses/RateLimitError'
+            "500":
+              $ref: '#/components/responses/ServerError'
+
+  /epl/v1/players/{id}/season_stats:
+    get:
+      summary: Get season statistics for an EPL player
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+        - $ref: '#/components/parameters/SeasonParam'
+      responses:
+        "200":
+          description: Player season statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLPlayerSeasonStat'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/player_stats/leaders:
+    get:
+      summary: Get EPL player statistics leaders
+      tags: [EPL]
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SeasonParam'
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/EPLPlayerStatEnum'
+          description: Stat type
+      responses:
+        "200":
+          description: Player statistics leaders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLPlayerStatLeaders'
+                  meta:
+                    $ref: '#/components/schemas/Pagination'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/team_stats/leaders:
+    get:
+      summary: Get EPL team statistics leaders
+      tags: [EPL]
+      parameters:
+        - $ref: '#/components/parameters/CursorParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SeasonParam'
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/EPLTeamStatEnum'
+          description: Stat type
+      responses:
+        "200":
+          description: Team statistics leaders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLTeamStatLeaders'
+                  meta:
+                    $ref: '#/components/schemas/Pagination'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/standings:
+        get:
+          summary: Get EPL standings
+          tags: [EPL]
+          parameters:
+            - $ref: '#/components/parameters/SeasonParam'
+          responses:
+            "200":
+              description: League standings
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/EPLStanding'
+            "401":
+              $ref: '#/components/responses/UnauthorizedError'
+            "400":
+              $ref: '#/components/responses/BadRequestError'
+            "429":
+              $ref: '#/components/responses/RateLimitError'
+            "500":
+              $ref: '#/components/responses/ServerError'
+
+  /epl/v1/teams:
+    get:
+      summary: Get EPL teams
+      tags: [EPL]
+      parameters:
+        - $ref: '#/components/parameters/SeasonParam'
+      responses:
+        "200":
+          description: List of EPL teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLTeam'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/teams/{id}/players:
+    get:
+      summary: Get players for an EPL team
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+        - $ref: '#/components/parameters/SeasonParam'
+      responses:
+        "200":
+          description: Team players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLPlayer'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /epl/v1/teams/{id}/season_stats:
+    get:
+      summary: Get season statistics for an EPL team
+      tags: [EPL]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+        - $ref: '#/components/parameters/SeasonParam'
+      responses:
+        "200":
+          description: Team season statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EPLTeamSeasonStat'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/RateLimitError'
+        "500":
+          $ref: '#/components/responses/ServerError'
+
+  /wnba/v1/teams:
+    get:
+      summary: Get WNBA teams
+      tags: [WNBA]
+      parameters:
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Eastern, Western]
+          description: Filter by conference
+      responses:
+        "200":
+          description: List of WNBA teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBATeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/teams/{id}:
+    get:
+      summary: Get specific WNBA team
+      tags: [WNBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/WNBATeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/players:
+    get:
+      summary: Get WNBA players
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of WNBA players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/players/active:
+    get:
+      summary: Get active WNBA players
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of active WNBA players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/players/{id}:
+    get:
+      summary: Get specific WNBA player
+      tags: [WNBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/WNBAPlayer"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/games:
+    get:
+      summary: Get WNBA games
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/DatesParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games before this date
+        - name: season_type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by season type
+      responses:
+        "200":
+          description: List of WNBA games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/games/{id}:
+    get:
+      summary: Get specific WNBA game
+      tags: [WNBA]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/WNBAGame"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/player_stats:
+    get:
+      summary: Get WNBA player statistics
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - $ref: "#/components/parameters/DatesParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats before this date
+      responses:
+        "200":
+          description: List of WNBA player stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlayerStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/team_stats:
+    get:
+      summary: Get WNBA team statistics
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - $ref: "#/components/parameters/DatesParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats before this date
+      responses:
+        "200":
+          description: List of WNBA team stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBATeamStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/player_season_stats:
+    get:
+      summary: Get WNBA player season statistics
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+        - name: season_type
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season type
+      responses:
+        "200":
+          description: WNBA player season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlayerSeasonStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/team_season_stats:
+    get:
+      summary: Get WNBA team season statistics
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+        - name: season_type
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season type
+      responses:
+        "200":
+          description: WNBA team season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBATeamSeasonStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/standings:
+    get:
+      summary: Get WNBA standings
+      tags: [WNBA]
+      parameters:
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+        - name: conference
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [Eastern, Western]
+          description: Filter by conference
+      responses:
+        "200":
+          description: WNBA standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAStanding"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/player_injuries:
+    get:
+      summary: Get WNBA player injuries
+      tags: [WNBA]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+      responses:
+        "200":
+          description: List of WNBA player injuries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlayerInjury"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /wnba/v1/plays:
+    get:
+      summary: Get WNBA play-by-play data
+      tags: [WNBA]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Game ID (required)
+      responses:
+        "200":
+          description: Play-by-play data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WNBAPlay"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/conferences:
+    get:
+      summary: Get NCAAF conferences
+      tags: [NCAAF]
+      responses:
+        "200":
+          description: List of NCAAF conferences
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFConference"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/conferences/{id}:
+    get:
+      summary: Get specific NCAAF conference
+      tags: [NCAAF]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Conference ID
+      responses:
+        "200":
+          description: Conference details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NCAAFConference"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/teams:
+    get:
+      summary: Get NCAAF teams
+      tags: [NCAAF]
+      parameters:
+        - name: conference_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by conference id
+      responses:
+        "200":
+          description: List of NCAAF teams
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/teams/{id}:
+    get:
+      summary: Get specific NCAAF team
+      tags: [NCAAF]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+      responses:
+        "200":
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NCAAFTeam"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/players:
+    get:
+      summary: Get NCAAF players
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of NCAAF players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/players/active:
+    get:
+      summary: Get active NCAAF players
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by player name
+        - name: first_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by first name
+        - name: last_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by last name
+      responses:
+        "200":
+          description: List of active NCAAF players
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFPlayer"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/players/{id}:
+    get:
+      summary: Get specific NCAAF player
+      tags: [NCAAF]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+      responses:
+        "200":
+          description: Player details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NCAAFPlayer"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/standings:
+    get:
+      summary: Get NCAAF standings
+      tags: [NCAAF]
+      parameters:
+        - name: conference_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Conference ID (required)
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year (required)
+      responses:
+        "200":
+          description: NCAAF standings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFStanding"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/games:
+    get:
+      summary: Get NCAAF games
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/DatesParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter games before this date
+        - name: weeks[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by weeks
+      responses:
+        "200":
+          description: List of NCAAF games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFGame"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/games/{id}:
+    get:
+      summary: Get specific NCAAF game
+      tags: [NCAAF]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Game ID
+      responses:
+        "200":
+          description: Game details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/NCAAFGame"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/rankings:
+    get:
+      summary: Get NCAAF rankings
+      tags: [NCAAF]
+      parameters:
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year (required)
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week
+      responses:
+        "200":
+          description: NCAAF rankings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFRanking"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/plays:
+    get:
+      summary: Get NCAAF play-by-play data
+      tags: [NCAAF]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Game ID (required)
+      responses:
+        "200":
+          description: Play-by-play data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFPlay"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/player_stats:
+    get:
+      summary: Get NCAAF player statistics
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - $ref: "#/components/parameters/DatesParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats before this date
+        - name: weeks[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by weeks
+      responses:
+        "200":
+          description: List of NCAAF player stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFPlayerStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/team_stats:
+    get:
+      summary: Get NCAAF team statistics
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: game_ids[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+        - $ref: "#/components/parameters/DatesParam"
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: start_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats after this date
+        - name: end_date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter stats before this date
+        - name: weeks[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by weeks
+      responses:
+        "200":
+          description: List of NCAAF team stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFTeamStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/player_season_stats:
+    get:
+      summary: Get NCAAF player season statistics
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/PlayerIdsParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+      responses:
+        "200":
+          description: NCAAF player season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFPlayerSeasonStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /ncaaf/v1/team_season_stats:
+    get:
+      summary: Get NCAAF team season statistics
+      tags: [NCAAF]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - $ref: "#/components/parameters/TeamIdsParam"
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season
+      responses:
+        "200":
+          description: NCAAF team season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAAFTeamSeasonStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
