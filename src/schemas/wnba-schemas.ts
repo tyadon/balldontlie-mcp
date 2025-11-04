@@ -78,24 +78,30 @@ export const wnbaPlayerByIdSchema = {
 export const wnbaGamesSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
     dates: {
       type: "array",
       items: { type: "string", format: "date" },
       description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
     },
     team_ids: {
       type: "array",
       items: { type: "number" },
       description: "Filter by team IDs",
     },
-    season_type: {
-      type: "string",
-      description: "Filter by season type",
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -107,15 +113,9 @@ export const wnbaGamesSchema = {
       format: "date",
       description: "End date for date range filter (YYYY-MM-DD)",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    season_type: {
+      type: "string",
+      description: "Filter by season type",
     },
   },
   additionalProperties: false,

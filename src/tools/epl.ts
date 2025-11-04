@@ -106,7 +106,7 @@ export function createEPLTools(apiClient: APIClient): MCPTool[] {
     {
       name: "epl_get_games",
       description:
-        "Get EPL games with optional filtering by date, season, team, etc.",
+        "Get EPL games with optional filtering by season, team, and week",
       inputSchema: schemas.eplGamesSchema,
       handler: async (params: any, headers?: Record<string, string>) => {
         return await apiClient.makeRequest("/epl/v1/games", params, headers);
@@ -166,6 +166,16 @@ export function createEPLTools(apiClient: APIClient): MCPTool[] {
           undefined,
           headers
         );
+      },
+    },
+
+    {
+      name: "epl_get_betting_odds",
+      description:
+        "Get EPL betting odds for games. Either (season and week) or game_ids is required. EPL odds include moneyline odds for home, away, and draw outcomes only (no spreads or totals).",
+      inputSchema: schemas.eplBettingOddsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/epl/v1/odds", params, headers);
       },
     },
   ];

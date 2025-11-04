@@ -44,6 +44,26 @@ export const ncaabTeamByIdSchema = {
 export const ncaabPlayersSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    player_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by specific player IDs",
+    },
     search: {
       type: "string",
       description: "Search players by name",
@@ -56,29 +76,9 @@ export const ncaabPlayersSchema = {
       type: "string",
       description: "Filter by last name",
     },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    player_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by specific player IDs",
-    },
     position: {
       type: "string",
       description: "Filter by player position",
-    },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
     },
   },
   additionalProperties: false,
@@ -114,25 +114,30 @@ export const ncaabStandingsSchema = {
 export const ncaabGamesSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
     dates: {
       type: "array",
       items: { type: "string", format: "date" },
       description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
     },
     team_ids: {
       type: "array",
       items: { type: "number" },
       description: "Filter by team IDs",
     },
-    weeks: {
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -144,15 +149,10 @@ export const ncaabGamesSchema = {
       format: "date",
       description: "End date for date range filter (YYYY-MM-DD)",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,
@@ -210,20 +210,15 @@ export const ncaabPlaysSchema = {
 export const ncaabPlayerStatsSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
     },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     player_ids: {
       type: "array",
@@ -235,10 +230,15 @@ export const ncaabPlayerStatsSchema = {
       items: { type: "number" },
       description: "Filter by game IDs",
     },
-    weeks: {
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates",
+    },
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -250,15 +250,15 @@ export const ncaabPlayerStatsSchema = {
       format: "date",
       description: "End date for date range filter",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,
@@ -267,15 +267,15 @@ export const ncaabPlayerStatsSchema = {
 export const ncaabTeamStatsSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
     },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     team_ids: {
       type: "array",
@@ -287,10 +287,15 @@ export const ncaabTeamStatsSchema = {
       items: { type: "number" },
       description: "Filter by game IDs",
     },
-    weeks: {
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates",
+    },
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -302,6 +307,18 @@ export const ncaabTeamStatsSchema = {
       format: "date",
       description: "End date for date range filter",
     },
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
+    },
+  },
+  additionalProperties: false,
+};
+
+export const ncaabPlayerSeasonStatsSchema = {
+  type: "object",
+  properties: {
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -312,16 +329,9 @@ export const ncaabTeamStatsSchema = {
       maximum: 100,
       description: "Number of results per page (max 100)",
     },
-  },
-  additionalProperties: false,
-};
-
-export const ncaabPlayerSeasonStatsSchema = {
-  type: "object",
-  properties: {
     season: {
       type: "number",
-      description: "Season year (required)",
+      description: "Season year",
     },
     player_ids: {
       type: "array",
@@ -333,18 +343,7 @@ export const ncaabPlayerSeasonStatsSchema = {
       items: { type: "number" },
       description: "Filter by team IDs",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
-    },
   },
-  required: ["season"],
   additionalProperties: false,
 };
 
@@ -378,10 +377,6 @@ export const ncaabTeamSeasonStatsSchema = {
 export const ncaabBracketsSchema = {
   type: "object",
   properties: {
-    season: {
-      type: "number",
-      description: "Season year",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -391,6 +386,18 @@ export const ncaabBracketsSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    season: {
+      type: "number",
+      description: "Season year",
+    },
+    round_id: {
+      type: "number",
+      description: "Filter by round ID",
+    },
+    region_id: {
+      type: "number",
+      description: "Filter by region ID",
     },
   },
   additionalProperties: false,

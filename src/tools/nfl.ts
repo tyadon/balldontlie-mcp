@@ -183,5 +183,42 @@ export function createNFLTools(apiClient: APIClient): MCPTool[] {
         return await apiClient.makeRequest("/nfl/v1/odds", params, headers);
       },
     },
+
+    {
+      name: "nfl_get_team_season_stats",
+      description:
+        "Get NFL team season stats including offense, defense, special teams, and opponent stats",
+      inputSchema: schemas.nflTeamSeasonStatsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nfl/v1/team_season_stats",
+          params,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nfl_get_team_stats",
+      description: "Get NFL team game statistics for individual games",
+      inputSchema: schemas.nflTeamStatsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nfl/v1/team_stats",
+          params,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nfl_get_plays",
+      description:
+        "Get NFL play-by-play data for games, ordered chronologically by wallclock time",
+      inputSchema: schemas.nflPlaysSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nfl/v1/plays", params, headers);
+      },
+    },
   ];
 }

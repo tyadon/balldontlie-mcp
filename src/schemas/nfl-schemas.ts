@@ -87,40 +87,6 @@ export const nflPlayerByIdSchema = {
 export const nflGamesSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    weeks: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by week numbers",
-    },
-    postseason: {
-      type: "boolean",
-      description: "Filter for postseason games",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter (YYYY-MM-DD)",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter (YYYY-MM-DD)",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -130,6 +96,30 @@ export const nflGamesSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates (YYYY-MM-DD format)",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
+    },
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason games",
+    },
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,
@@ -150,20 +140,15 @@ export const nflGameByIdSchema = {
 export const nflStatsSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
     },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     player_ids: {
       type: "array",
@@ -175,34 +160,10 @@ export const nflStatsSchema = {
       items: { type: "number" },
       description: "Filter by game IDs",
     },
-    weeks: {
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
-    },
-    postseason: {
-      type: "boolean",
-      description: "Filter for postseason stats",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter",
-    },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+      description: "Filter by seasons",
     },
   },
   additionalProperties: false,
@@ -220,26 +181,24 @@ export const nflSeasonStatsSchema = {
       items: { type: "number" },
       description: "Filter by player IDs",
     },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
+    team_id: {
+      type: "number",
+      description: "Filter by team ID",
     },
     postseason: {
       type: "boolean",
       description: "Filter for postseason stats",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
+    sort_by: {
+      type: "string",
+      description: "Sort by field",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    sort_order: {
+      type: "string",
+      description: "Sort order (asc or desc)",
     },
   },
+  required: ["season"],
   additionalProperties: false,
 };
 
@@ -250,17 +209,8 @@ export const nflStandingsSchema = {
       type: "number",
       description: "Season year",
     },
-    conference: {
-      type: "string",
-      enum: ["AFC", "NFC"],
-      description: "Filter by conference",
-    },
-    division: {
-      type: "string",
-      enum: ["NORTH", "SOUTH", "EAST", "WEST"],
-      description: "Filter by division",
-    },
   },
+  required: ["season"],
   additionalProperties: false,
 };
 
@@ -352,5 +302,90 @@ export const nflBettingOddsSchema = {
       description: "Number of results per page (max 100)",
     },
   },
+  additionalProperties: false,
+};
+
+export const nflTeamSeasonStatsSchema = {
+  type: "object",
+  properties: {
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs (required)",
+    },
+    season: {
+      type: "number",
+      description: "Filter by season (required)",
+    },
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason stats (true) or regular season (false)",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  required: ["team_ids", "season"],
+  additionalProperties: false,
+};
+
+export const nflTeamStatsSchema = {
+  type: "object",
+  properties: {
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
+    },
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  additionalProperties: false,
+};
+
+export const nflPlaysSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "Filter by game ID (required)",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  required: ["game_id"],
   additionalProperties: false,
 };

@@ -1036,6 +1036,214 @@ components:
           format: date-time
           description: Last update timestamp
 
+    NFLTeamSeasonStat:
+      type: object
+      description: Comprehensive team season statistics including offense, defense, special teams, and opponent stats
+      properties:
+        team:
+          $ref: "#/components/schemas/NFLTeam"
+        season:
+          type: integer
+        season_type:
+          type: integer
+          description: Season type (2 = regular season, 3 = postseason)
+        games_played:
+          type: number
+          nullable: true
+        total_offensive_yards:
+          type: number
+          nullable: true
+          description: Total offensive yards (corrected from passing_total_yards)
+        total_offensive_yards_per_game:
+          type: number
+          nullable: true
+        total_points:
+          type: number
+          nullable: true
+        total_points_per_game:
+          type: number
+          nullable: true
+        passing_completions:
+          type: number
+          nullable: true
+        passing_yards:
+          type: number
+          nullable: true
+        passing_yards_per_game:
+          type: number
+          nullable: true
+        passing_attempts:
+          type: number
+          nullable: true
+        passing_touchdowns:
+          type: number
+          nullable: true
+        passing_interceptions:
+          type: number
+          nullable: true
+        rushing_yards:
+          type: number
+          nullable: true
+        rushing_yards_per_game:
+          type: number
+          nullable: true
+        rushing_attempts:
+          type: number
+          nullable: true
+        rushing_touchdowns:
+          type: number
+          nullable: true
+        receiving_receptions:
+          type: number
+          nullable: true
+        receiving_yards:
+          type: number
+          nullable: true
+        receiving_touchdowns:
+          type: number
+          nullable: true
+        # Note: Schema includes 200+ additional fields for detailed stats, special teams, and opponent stats
+
+    NFLTeamStat:
+      type: object
+      description: Team game statistics
+      properties:
+        game:
+          $ref: "#/components/schemas/NFLGame"
+        team:
+          $ref: "#/components/schemas/NFLTeam"
+        home_away:
+          type: string
+          description: Whether team is home or away
+        first_downs:
+          type: integer
+          nullable: true
+        first_downs_passing:
+          type: integer
+          nullable: true
+        first_downs_rushing:
+          type: integer
+          nullable: true
+        third_down_efficiency:
+          type: string
+          nullable: true
+        third_down_conversions:
+          type: integer
+          nullable: true
+        third_down_attempts:
+          type: integer
+          nullable: true
+        total_yards:
+          type: integer
+          nullable: true
+        yards_per_play:
+          type: integer
+          nullable: true
+        net_passing_yards:
+          type: integer
+          nullable: true
+        passing_completions:
+          type: integer
+          nullable: true
+        passing_attempts:
+          type: integer
+          nullable: true
+        sacks:
+          type: integer
+          nullable: true
+        rushing_yards:
+          type: integer
+          nullable: true
+        rushing_attempts:
+          type: integer
+          nullable: true
+        turnovers:
+          type: integer
+          nullable: true
+        fumbles_lost:
+          type: integer
+          nullable: true
+        interceptions_thrown:
+          type: integer
+          nullable: true
+        penalties:
+          type: integer
+          nullable: true
+        penalty_yards:
+          type: integer
+          nullable: true
+        possession_time:
+          type: string
+          nullable: true
+
+    NFLPlay:
+      type: object
+      description: Play-by-play data for NFL games
+      properties:
+        id:
+          type: string
+        game:
+          $ref: "#/components/schemas/NFLGame"
+        type_slug:
+          type: string
+          nullable: true
+        type_abbreviation:
+          type: string
+          nullable: true
+        type_text:
+          type: string
+          nullable: true
+        text:
+          type: string
+          description: Full play description
+        short_text:
+          type: string
+          nullable: true
+        away_score:
+          type: integer
+        home_score:
+          type: integer
+        scoring_play:
+          type: boolean
+        period:
+          type: integer
+        clock_display:
+          type: string
+          nullable: true
+        team:
+          allOf:
+            - $ref: "#/components/schemas/NFLTeam"
+          nullable: true
+        start_yard_line:
+          type: integer
+          nullable: true
+        start_down:
+          type: integer
+          nullable: true
+        start_distance:
+          type: integer
+          nullable: true
+        end_yard_line:
+          type: integer
+          nullable: true
+        end_down:
+          type: integer
+          nullable: true
+        end_distance:
+          type: integer
+          nullable: true
+        stat_yardage:
+          type: integer
+          nullable: true
+        home_win_probability:
+          type: number
+          nullable: true
+        wallclock:
+          type: string
+          format: date-time
+          nullable: true
+          description: Real-time timestamp of the play
+
     MLBTeam:
       type: object
       properties:
@@ -1852,6 +2060,35 @@ components:
           type: number
         name:
           type: string
+
+    EPLBettingOdd:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Betting odd ID
+        game_id:
+          type: integer
+          description: Game ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+        moneyline_home_odds:
+          type: integer
+          nullable: true
+          description: Home team moneyline odds
+        moneyline_away_odds:
+          type: integer
+          nullable: true
+          description: Away team moneyline odds
+        moneyline_draw_odds:
+          type: integer
+          nullable: true
+          description: Draw moneyline odds
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
 
     WNBATeam:
       type: object
@@ -5080,6 +5317,157 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+  /nfl/v1/team_season_stats:
+    get:
+      summary: Get NFL team season stats
+      description: Retrieve comprehensive team season statistics including offense, defense, special teams, and opponent stats
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: team_ids
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by team IDs (required)
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Filter by season (required)
+        - name: postseason
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter for postseason stats (true) or regular season (false)
+      responses:
+        "200":
+          description: NFL team season stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLTeamSeasonStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/team_stats:
+    get:
+      summary: Get NFL team game stats
+      description: Retrieve team statistics for individual games
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: team_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by team IDs
+        - name: seasons
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by seasons
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+      responses:
+        "200":
+          description: NFL team game stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLTeamStat"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/plays:
+    get:
+      summary: Get NFL play-by-play data
+      description: Retrieve play-by-play data for NFL games, ordered chronologically by wallclock time
+      tags: [NFL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Filter by game ID (required)
+      responses:
+        "200":
+          description: NFL play-by-play data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLPlay"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
   /mlb/v1/teams:
     get:
       summary: Get MLB teams
@@ -6485,6 +6873,59 @@ paths:
           $ref: '#/components/responses/RateLimitError'
         "500":
           $ref: '#/components/responses/ServerError'
+
+  /epl/v1/odds:
+    get:
+      summary: Get EPL betting odds
+      description: Retrieve betting odds for EPL games. Either (season and week) or game_ids is required. EPL odds include moneyline odds for home, away, and draw outcomes only (no spreads or totals).
+      tags: [EPL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by season (must be provided with week)
+        - name: week
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by week (must be provided with season)
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+      responses:
+        "200":
+          description: EPL betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EPLBettingOdd"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
 
   /wnba/v1/teams:
     get:

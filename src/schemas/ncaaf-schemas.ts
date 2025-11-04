@@ -114,25 +114,30 @@ export const ncaafStandingsSchema = {
 export const ncaafGamesSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
     dates: {
       type: "array",
       items: { type: "string", format: "date" },
       description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
     },
     team_ids: {
       type: "array",
       items: { type: "number" },
       description: "Filter by team IDs",
     },
-    weeks: {
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -144,15 +149,10 @@ export const ncaafGamesSchema = {
       format: "date",
       description: "End date for date range filter (YYYY-MM-DD)",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,
@@ -210,6 +210,31 @@ export const ncaafPlaysSchema = {
 export const ncaafPlayerStatsSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+    player_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by player IDs",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs",
+    },
     dates: {
       type: "array",
       items: { type: "string", format: "date" },
@@ -219,26 +244,6 @@ export const ncaafPlayerStatsSchema = {
       type: "array",
       items: { type: "number" },
       description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    player_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by player IDs",
-    },
-    game_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by game IDs",
-    },
-    weeks: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by week numbers",
     },
     start_date: {
       type: "string",
@@ -250,15 +255,10 @@ export const ncaafPlayerStatsSchema = {
       format: "date",
       description: "End date for date range filter",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,
@@ -267,15 +267,15 @@ export const ncaafPlayerStatsSchema = {
 export const ncaafTeamStatsSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
     },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     team_ids: {
       type: "array",
@@ -287,10 +287,15 @@ export const ncaafTeamStatsSchema = {
       items: { type: "number" },
       description: "Filter by game IDs",
     },
-    weeks: {
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates",
+    },
+    seasons: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by week numbers",
+      description: "Filter by seasons",
     },
     start_date: {
       type: "string",
@@ -302,15 +307,10 @@ export const ncaafTeamStatsSchema = {
       format: "date",
       description: "End date for date range filter",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    weeks: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by week numbers",
     },
   },
   additionalProperties: false,

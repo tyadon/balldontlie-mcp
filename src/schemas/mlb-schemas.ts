@@ -91,35 +91,6 @@ export const mlbPlayerByIdSchema = {
 export const mlbGamesSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    postseason: {
-      type: "boolean",
-      description: "Filter for postseason games",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter (YYYY-MM-DD)",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter (YYYY-MM-DD)",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -129,6 +100,25 @@ export const mlbGamesSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates (YYYY-MM-DD format)",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
+    },
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason games",
     },
   },
   additionalProperties: false,
@@ -149,20 +139,15 @@ export const mlbGameByIdSchema = {
 export const mlbStatsSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
     },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     player_ids: {
       type: "array",
@@ -174,20 +159,18 @@ export const mlbStatsSchema = {
       items: { type: "number" },
       description: "Filter by game IDs",
     },
-    postseason: {
-      type: "boolean",
-      description: "Filter for postseason stats",
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
     },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter",
-    },
+  },
+  additionalProperties: false,
+};
+
+export const mlbSeasonStatsSchema = {
+  type: "object",
+  properties: {
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -198,13 +181,6 @@ export const mlbStatsSchema = {
       maximum: 100,
       description: "Number of results per page (max 100)",
     },
-  },
-  additionalProperties: false,
-};
-
-export const mlbSeasonStatsSchema = {
-  type: "object",
-  properties: {
     season: {
       type: "number",
       description: "Season year",
@@ -214,26 +190,24 @@ export const mlbSeasonStatsSchema = {
       items: { type: "number" },
       description: "Filter by player IDs",
     },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
+    team_id: {
+      type: "number",
+      description: "Filter by team ID",
     },
     postseason: {
       type: "boolean",
       description: "Filter for postseason stats",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
+    sort_by: {
+      type: "string",
+      description: "Sort by field",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    sort_order: {
+      type: "string",
+      description: "Sort order (asc or desc)",
     },
   },
+  required: ["season"],
   additionalProperties: false,
 };
 
@@ -274,17 +248,8 @@ export const mlbStandingsSchema = {
       type: "number",
       description: "Season year",
     },
-    league: {
-      type: "string",
-      enum: ["American", "National"],
-      description: "Filter by league",
-    },
-    division: {
-      type: "string",
-      enum: ["East", "Central", "West"],
-      description: "Filter by division",
-    },
   },
+  required: ["season"],
   additionalProperties: false,
 };
 

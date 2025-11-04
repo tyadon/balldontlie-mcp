@@ -3,7 +3,9 @@
     "allow": [
       "Bash(grep:*)",
       "Bash(test:*)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(curl:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

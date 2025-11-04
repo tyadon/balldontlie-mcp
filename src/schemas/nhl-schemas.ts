@@ -48,8 +48,12 @@ export const nhlTeamSeasonStatsSchema = {
       type: "number",
       description: "Season year",
     },
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason stats",
+    },
   },
-  required: ["id"],
+  required: ["id", "season"],
   additionalProperties: false,
 };
 
@@ -64,37 +68,18 @@ export const nhlTeamStatsLeadersSchema = {
       type: "string",
       description: "Type of statistic to get leaders for",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason stats",
     },
   },
+  required: ["season", "type"],
   additionalProperties: false,
 };
 
 export const nhlPlayersSchema = {
   type: "object",
   properties: {
-    search: {
-      type: "string",
-      description: "Search players by name",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    player_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by specific player IDs",
-    },
-    position: {
-      type: "string",
-      description: "Filter by player position",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -104,6 +89,25 @@ export const nhlPlayersSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    player_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by specific player IDs",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    name: {
+      type: "string",
+      description: "Filter by player name",
+    },
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by seasons",
     },
   },
   additionalProperties: false,
@@ -132,8 +136,12 @@ export const nhlPlayerSeasonStatsSchema = {
       type: "number",
       description: "Season year",
     },
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason stats",
+    },
   },
-  required: ["id"],
+  required: ["id", "season"],
   additionalProperties: false,
 };
 
@@ -148,19 +156,33 @@ export const nhlPlayerStatsLeadersSchema = {
       type: "string",
       description: "Type of statistic to get leaders for",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason stats",
     },
   },
+  required: ["season", "type"],
   additionalProperties: false,
 };
 
 export const nhlGamesSchema = {
   type: "object",
   properties: {
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
     dates: {
       type: "array",
       items: { type: "string", format: "date" },
@@ -171,35 +193,14 @@ export const nhlGamesSchema = {
       items: { type: "number" },
       description: "Filter by seasons",
     },
-    team_ids: {
+    game_ids: {
       type: "array",
       items: { type: "number" },
-      description: "Filter by team IDs",
+      description: "Filter by game IDs",
     },
-    season_type: {
-      type: "string",
-      enum: ["regular", "playoffs"],
-      description: "Filter by season type",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter (YYYY-MM-DD)",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter (YYYY-MM-DD)",
-    },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    postseason: {
+      type: "boolean",
+      description: "Filter for postseason games",
     },
   },
   additionalProperties: false,
@@ -239,41 +240,6 @@ export const nhlStandingsSchema = {
 export const nhlBoxScoresSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    game_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by game IDs",
-    },
-    season_type: {
-      type: "string",
-      enum: ["regular", "playoffs"],
-      description: "Filter by season type",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -283,6 +249,30 @@ export const nhlBoxScoresSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    player_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by player IDs",
+    },
+    team_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by team IDs",
+    },
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates",
+    },
+    season: {
+      type: "number",
+      description: "Filter by season",
+    },
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs",
     },
   },
   additionalProperties: false,

@@ -5,19 +5,10 @@ export const eplTeamsSchema = {
   properties: {
     season: {
       type: "number",
-      description: "Season year (required for current data)",
-    },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
-    },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+      description: "Season year",
     },
   },
+  required: ["season"],
   additionalProperties: false,
 };
 
@@ -159,13 +150,15 @@ export const eplStandingsSchema = {
 export const eplPlayersSchema = {
   type: "object",
   properties: {
-    season: {
+    cursor: {
       type: "number",
-      description: "Season year (required)",
+      description: "Pagination cursor",
     },
-    search: {
-      type: "string",
-      description: "Search players by name",
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
     },
     team_ids: {
       type: "array",
@@ -177,19 +170,21 @@ export const eplPlayersSchema = {
       items: { type: "number" },
       description: "Filter by specific player IDs",
     },
-    position: {
+    season: {
+      type: "number",
+      description: "Season year",
+    },
+    search: {
       type: "string",
-      description: "Filter by player position",
+      description: "Search players by name",
     },
-    cursor: {
-      type: "number",
-      description: "Pagination cursor",
+    first_name: {
+      type: "string",
+      description: "Filter by first name",
     },
-    per_page: {
-      type: "number",
-      minimum: 1,
-      maximum: 100,
-      description: "Number of results per page (max 100)",
+    last_name: {
+      type: "string",
+      description: "Filter by last name",
     },
   },
   required: ["season"],
@@ -305,36 +300,6 @@ export const eplPlayerStatsLeadersSchema = {
 export const eplGamesSchema = {
   type: "object",
   properties: {
-    dates: {
-      type: "array",
-      items: { type: "string", format: "date" },
-      description: "Filter by specific dates (YYYY-MM-DD format)",
-    },
-    seasons: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by seasons",
-    },
-    team_ids: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by team IDs",
-    },
-    weeks: {
-      type: "array",
-      items: { type: "number" },
-      description: "Filter by week numbers",
-    },
-    start_date: {
-      type: "string",
-      format: "date",
-      description: "Start date for date range filter (YYYY-MM-DD)",
-    },
-    end_date: {
-      type: "string",
-      format: "date",
-      description: "End date for date range filter (YYYY-MM-DD)",
-    },
     cursor: {
       type: "number",
       description: "Pagination cursor",
@@ -344,6 +309,18 @@ export const eplGamesSchema = {
       minimum: 1,
       maximum: 100,
       description: "Number of results per page (max 100)",
+    },
+    season: {
+      type: "number",
+      description: "Filter by season",
+    },
+    team_id: {
+      type: "number",
+      description: "Filter by team ID",
+    },
+    week: {
+      type: "number",
+      description: "Filter by week",
     },
   },
   additionalProperties: false,
@@ -406,5 +383,35 @@ export const eplGamePlayerStatsSchema = {
     },
   },
   required: ["id"],
+  additionalProperties: false,
+};
+
+export const eplBettingOddsSchema = {
+  type: "object",
+  properties: {
+    season: {
+      type: "number",
+      description: "Filter by season (must be provided with week)",
+    },
+    week: {
+      type: "number",
+      description: "Filter by week (must be provided with season)",
+    },
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
   additionalProperties: false,
 };
