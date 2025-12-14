@@ -351,3 +351,121 @@ export const nbaBettingOddsSchema = {
   },
   additionalProperties: false,
 };
+
+export const nbaLineupsSchema = {
+  type: "object",
+  properties: {
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs (required)",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  required: ["game_ids"],
+  additionalProperties: false,
+};
+
+export const nbaPlayerPropsSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "The game ID to retrieve player props for (required)",
+    },
+    player_id: {
+      type: "number",
+      description: "Filter props for a specific player",
+    },
+    prop_type: {
+      type: "string",
+      enum: [
+        "assists",
+        "assists_1q",
+        "assists_first3min",
+        "blocks",
+        "double_double",
+        "points",
+        "points_1q",
+        "points_assists",
+        "points_first3min",
+        "points_rebounds",
+        "points_rebounds_assists",
+        "rebounds",
+        "rebounds_1q",
+        "rebounds_assists",
+        "rebounds_first3min",
+        "steals",
+        "threes",
+        "triple_double",
+      ],
+      description: "Filter by prop type",
+    },
+  },
+  required: ["game_id"],
+  additionalProperties: false,
+};
+
+export const nbaContractsByTeamSchema = {
+  type: "object",
+  properties: {
+    team_id: {
+      type: "number",
+      description: "Team ID (required)",
+    },
+    season: {
+      type: "number",
+      description: "Season year (defaults to current season if not specified)",
+    },
+  },
+  required: ["team_id"],
+  additionalProperties: false,
+};
+
+export const nbaContractsByPlayerSchema = {
+  type: "object",
+  properties: {
+    player_id: {
+      type: "number",
+      description: "Player ID (required)",
+    },
+    seasons: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by specific seasons",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  required: ["player_id"],
+  additionalProperties: false,
+};
+
+export const nbaContractsAggregateSchema = {
+  type: "object",
+  properties: {
+    player_id: {
+      type: "number",
+      description: "Player ID (required)",
+    },
+  },
+  required: ["player_id"],
+  additionalProperties: false,
+};

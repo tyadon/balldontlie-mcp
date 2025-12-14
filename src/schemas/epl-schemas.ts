@@ -415,3 +415,38 @@ export const eplBettingOddsSchema = {
   },
   additionalProperties: false,
 };
+
+export const eplPlayerPropsSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "The game ID to retrieve player props for (required)",
+    },
+    player_id: {
+      type: "number",
+      description: "Filter props for a specific player",
+    },
+    prop_type: {
+      type: "string",
+      enum: [
+        "anytime_goal",
+        "assists",
+        "first_goal",
+        "first_half_goal",
+        "goals_assists",
+        "header_goal",
+        "last_goal",
+        "outside_box_goal",
+        "saves",
+        "second_half_goal",
+        "shots",
+        "shots_on_target",
+        "tackles",
+      ],
+      description: "Filter by prop type",
+    },
+  },
+  required: ["game_id"],
+  additionalProperties: false,
+};

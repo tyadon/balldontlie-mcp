@@ -127,5 +127,29 @@ export function createNHLTools(apiClient: APIClient): MCPTool[] {
         );
       },
     },
+
+    {
+      name: "nhl_get_betting_odds",
+      description:
+        "Get NHL betting odds for games. Either dates or game_ids is required.",
+      inputSchema: schemas.nhlBettingOddsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nhl/v1/odds", params, headers);
+      },
+    },
+
+    {
+      name: "nhl_get_player_props",
+      description:
+        "Get NHL player prop betting odds. Player prop data is LIVE and updated in real-time. Returns all player props for the specified game.",
+      inputSchema: schemas.nhlPlayerPropsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nhl/v1/odds/player_props",
+          params,
+          headers
+        );
+      },
+    },
   ];
 }

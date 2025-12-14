@@ -32,9 +32,21 @@ components:
         next_cursor:
           type: integer
           description: Cursor for the next page of results
+        prev_cursor:
+          type: integer
+          nullable: true
+          description: Cursor for the previous page of results
         per_page:
           type: integer
           description: Number of results per page
+
+    PlayerPropMeta:
+      type: object
+      description: Metadata for player prop responses (no pagination - all results returned in single response)
+      properties:
+        per_page:
+          type: integer
+          description: Total number of results returned
 
     # NBA Components
     NBATeam:
@@ -106,6 +118,10 @@ components:
         time:
           type: string
           nullable: true
+        period_detail:
+          type: string
+          nullable: true
+          description: Detailed period information (e.g., 'Final', '1:00 - 2nd Half')
         datetime:
           type: string
           format: date-time
@@ -375,6 +391,55 @@ components:
                   player:
                     $ref: "#/components/schemas/NBAPlayer"
 
+    NBALineup:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the lineup entry
+        game_id:
+          type: integer
+          description: ID of the game this lineup belongs to
+        starter:
+          type: boolean
+          description: Whether the player is a starter (true) or bench player (false)
+        position:
+          type: string
+          description: Position the player is listed at for this game
+        player:
+          type: object
+          description: Player information (slim version with team_id)
+          properties:
+            id:
+              type: integer
+            first_name:
+              type: string
+            last_name:
+              type: string
+            position:
+              type: string
+            height:
+              type: string
+            weight:
+              type: string
+            jersey_number:
+              type: string
+            college:
+              type: string
+            country:
+              type: string
+            draft_year:
+              type: integer
+            draft_round:
+              type: integer
+            draft_number:
+              type: integer
+            team_id:
+              type: integer
+              description: ID of the player's current team
+        team:
+          $ref: "#/components/schemas/NBATeam"
+
     NBAPlayerInjury:
       type: object
       properties:
@@ -499,6 +564,312 @@ components:
           format: date-time
           description: Last update timestamp
 
+    NBAPlayerPropMarketOverUnder:
+      type: object
+      description: Over/under market type for player props
+      required:
+        - type
+        - over_odds
+        - under_odds
+      properties:
+        type:
+          type: string
+          enum: [over_under]
+          description: Market type identifier
+        over_odds:
+          type: integer
+          description: American odds for over bet
+        under_odds:
+          type: integer
+          description: American odds for under bet
+
+    NBAPlayerPropMarketMilestone:
+      type: object
+      description: Milestone market type for player props
+      required:
+        - type
+        - odds
+      properties:
+        type:
+          type: string
+          enum: [milestone]
+          description: Market type identifier
+        odds:
+          type: integer
+          description: American odds for milestone bet
+
+    NBAPlayerProp:
+      type: object
+      description: NBA player prop betting data
+      required:
+        - id
+        - game_id
+        - player_id
+        - vendor
+        - prop_type
+        - line_value
+        - market
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique player prop ID
+        game_id:
+          type: integer
+          description: NBA game ID
+        player_id:
+          type: integer
+          description: NBA player ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+          enum:
+            - draftkings
+            - betway
+            - betrivers
+            - ballybet
+        prop_type:
+          type: string
+          description: Type of player prop
+          enum:
+            - points
+            - rebounds
+            - assists
+            - threes
+            - steals
+            - blocks
+            - points_1q
+            - rebounds_1q
+            - assists_1q
+            - points_first3min
+            - rebounds_first3min
+            - assists_first3min
+          example: points
+        line_value:
+          type: string
+          description: The line value for the prop
+          example: "25.5"
+        market:
+          oneOf:
+            - $ref: "#/components/schemas/NBAPlayerPropMarketOverUnder"
+            - $ref: "#/components/schemas/NBAPlayerPropMarketMilestone"
+          description: Market information - either over_under or milestone type
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when this prop was last updated
+
+    NBAContract:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Contract ID
+        player_id:
+          type: integer
+          description: Player ID
+        season:
+          type: integer
+          description: Contract season year
+        team_id:
+          type: integer
+          description: Team ID
+        cap_hit:
+          type: integer
+          nullable: true
+          description: Annual salary cap hit in dollars
+        total_cash:
+          type: integer
+          nullable: true
+          description: Total cash payment for the season in dollars
+        base_salary:
+          type: integer
+          nullable: true
+          description: Base salary in dollars
+        rank:
+          type: integer
+          nullable: true
+          description: Salary rank
+        player:
+          type: object
+          description: Player information
+          properties:
+            id:
+              type: integer
+            first_name:
+              type: string
+            last_name:
+              type: string
+            position:
+              type: string
+            height:
+              type: string
+            weight:
+              type: string
+            jersey_number:
+              type: string
+            college:
+              type: string
+            country:
+              type: string
+            draft_year:
+              type: integer
+            draft_round:
+              type: integer
+            draft_number:
+              type: integer
+            team_id:
+              type: integer
+        team:
+          $ref: "#/components/schemas/NBATeam"
+
+    NBAContractAggregate:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Contract aggregate ID
+        player_id:
+          type: integer
+          description: Player ID
+        start_year:
+          type: integer
+          description: First year of contract
+        end_year:
+          type: integer
+          description: Last year of contract
+        contract_type:
+          type: string
+          description: Contract type (e.g., Rookie, Free Agent, Extension)
+        contract_status:
+          type: string
+          nullable: true
+          description: Contract status (e.g., CURRENT, UPCOMING EXTENSION)
+        contract_years:
+          type: integer
+          nullable: true
+          description: Number of years in contract
+        total_value:
+          type: integer
+          nullable: true
+          description: Total contract value in dollars
+        average_salary:
+          type: integer
+          nullable: true
+          description: Average annual salary in dollars
+        guaranteed_at_signing:
+          type: integer
+          nullable: true
+          description: Guaranteed amount at signing in dollars
+        total_guaranteed:
+          type: integer
+          nullable: true
+          description: Total guaranteed amount in dollars
+        signed_using:
+          type: string
+          nullable: true
+          description: Exception or method used to sign (e.g., Bird Rights, Cap Space)
+        free_agent_year:
+          type: integer
+          nullable: true
+          description: Year player becomes a free agent
+        free_agent_status:
+          type: string
+          nullable: true
+          description: Free agent status (e.g., UFA, RFA)
+        contract_notes:
+          type: object
+          nullable: true
+          description: Additional contract notes (options, escalators, etc.)
+        team_id:
+          type: integer
+          nullable: true
+          description: Team ID that signed the contract
+        player:
+          type: object
+          description: Player information
+          properties:
+            id:
+              type: integer
+            first_name:
+              type: string
+            last_name:
+              type: string
+            position:
+              type: string
+            height:
+              type: string
+            weight:
+              type: string
+            jersey_number:
+              type: string
+            college:
+              type: string
+            country:
+              type: string
+            draft_year:
+              type: integer
+            draft_round:
+              type: integer
+            draft_number:
+              type: integer
+            team_id:
+              type: integer
+        team:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/NBATeam"
+
+    NBALineup:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Lineup entry ID
+        game_id:
+          type: integer
+          description: Game ID
+        starter:
+          type: boolean
+          description: Whether the player started the game
+        position:
+          type: string
+          nullable: true
+          description: Player's position in the lineup
+        player:
+          type: object
+          description: Player information (slim version with team_id instead of nested team)
+          properties:
+            id:
+              type: integer
+            first_name:
+              type: string
+            last_name:
+              type: string
+            position:
+              type: string
+            height:
+              type: string
+            weight:
+              type: string
+            jersey_number:
+              type: string
+            college:
+              type: string
+            country:
+              type: string
+            draft_year:
+              type: integer
+            draft_round:
+              type: integer
+            draft_number:
+              type: integer
+            team_id:
+              type: integer
+              description: ID of the player's current team
+        team:
+          $ref: "#/components/schemas/NBATeam"
+
     NFLTeam:
       type: object
       properties:
@@ -547,6 +918,61 @@ components:
         team:
           $ref: "#/components/schemas/NFLTeam"
 
+
+    NFLRosterPlayer:
+      type: object
+      description: NFL player object without team reference (used in roster responses)
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        position:
+          type: string
+        position_abbreviation:
+          type: string
+        height:
+          type: string
+          nullable: true
+        weight:
+          type: string
+          nullable: true
+        jersey_number:
+          type: string
+          nullable: true
+        college:
+          type: string
+          nullable: true
+        experience:
+          type: string
+          nullable: true
+        age:
+          type: integer
+          nullable: true
+
+    NFLRosterEntry:
+      type: object
+      description: NFL team roster entry with depth chart information
+      properties:
+        player:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/NFLRosterPlayer"
+        position:
+          type: string
+          description: Position on the depth chart
+        depth:
+          type: integer
+          description: Depth chart position (1 = starter, 2 = backup, etc.)
+        player_name:
+          type: string
+          description: Player name
+        injury_status:
+          type: string
+          nullable: true
+          description: Current injury status if applicable
     NFLGame:
       type: object
       properties:
@@ -1035,6 +1461,115 @@ components:
           type: string
           format: date-time
           description: Last update timestamp
+
+    NFLPlayerPropMarketOverUnder:
+      type: object
+      description: Over/under market type for NFL player props
+      required:
+        - type
+        - over_odds
+        - under_odds
+      properties:
+        type:
+          type: string
+          enum: [over_under]
+          description: Market type identifier
+        over_odds:
+          type: integer
+          description: American odds for over bet
+        under_odds:
+          type: integer
+          description: American odds for under bet
+
+    NFLPlayerPropMarketMilestone:
+      type: object
+      description: Milestone market type for NFL player props
+      required:
+        - type
+        - odds
+      properties:
+        type:
+          type: string
+          enum: [milestone]
+          description: Market type identifier
+        odds:
+          type: integer
+          description: American odds for milestone bet
+
+    NFLPlayerProp:
+      type: object
+      description: NFL player prop betting data
+      required:
+        - id
+        - game_id
+        - player_id
+        - vendor
+        - prop_type
+        - line_value
+        - market
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique player prop ID
+        game_id:
+          type: integer
+          description: NFL game ID
+        player_id:
+          type: integer
+          description: NFL player ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+          enum:
+            - draftkings
+            - betway
+            - betrivers
+            - ballybet
+            - betparx
+        prop_type:
+          type: string
+          description: Type of player prop
+          enum:
+            - anytime_td
+            - anytime_td_1h
+            - anytime_td_1q
+            - anytime_td_2h
+            - fg_made
+            - fg_made_1h
+            - first_td
+            - interceptions
+            - kicking_points
+            - longest_pass
+            - longest_reception
+            - longest_rush
+            - passing_attempts
+            - passing_completions
+            - passing_tds
+            - passing_tds_1h
+            - passing_yards
+            - passing_yards_1h
+            - receiving_yards
+            - receiving_yards_1h
+            - receptions
+            - rushing_attempts
+            - rushing_receiving_yards
+            - rushing_yards
+            - rushing_yards_1h
+          example: rushing_yards
+        line_value:
+          type: string
+          description: The line value for the prop
+          example: "275.5"
+        market:
+          oneOf:
+            - $ref: "#/components/schemas/NFLPlayerPropMarketOverUnder"
+            - $ref: "#/components/schemas/NFLPlayerPropMarketMilestone"
+          description: Market information - either over_under or milestone type
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when this prop was last updated
 
     NFLTeamSeasonStat:
       type: object
@@ -2090,6 +2625,101 @@ components:
           format: date-time
           description: Last update timestamp
 
+    EPLPlayerPropMarketOverUnder:
+      type: object
+      description: Over/under market type for EPL player props
+      required:
+        - type
+        - over_odds
+        - under_odds
+      properties:
+        type:
+          type: string
+          enum: [over_under]
+          description: Market type identifier
+        over_odds:
+          type: integer
+          description: American odds for over bet
+        under_odds:
+          type: integer
+          description: American odds for under bet
+
+    EPLPlayerPropMarketMilestone:
+      type: object
+      description: Milestone market type for EPL player props
+      required:
+        - type
+        - odds
+      properties:
+        type:
+          type: string
+          enum: [milestone]
+          description: Market type identifier
+        odds:
+          type: integer
+          description: American odds for milestone bet
+
+    EPLPlayerProp:
+      type: object
+      description: EPL player prop betting data
+      required:
+        - id
+        - game_id
+        - player_id
+        - vendor
+        - prop_type
+        - line_value
+        - market
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique player prop ID
+        game_id:
+          type: integer
+          description: EPL game ID
+        player_id:
+          type: integer
+          description: EPL player ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+          enum:
+            - draftkings
+            - fanduel
+            - caesars
+        prop_type:
+          type: string
+          description: Type of player prop
+          enum:
+            - anytime_goal
+            - assists
+            - first_goal
+            - first_half_goal
+            - goals_assists
+            - header_goal
+            - last_goal
+            - outside_box_goal
+            - saves
+            - second_half_goal
+            - shots
+            - shots_on_target
+            - tackles
+          example: anytime_goal
+        line_value:
+          type: string
+          description: The line value for the prop
+          example: "1.0"
+        market:
+          oneOf:
+            - $ref: "#/components/schemas/EPLPlayerPropMarketOverUnder"
+            - $ref: "#/components/schemas/EPLPlayerPropMarketMilestone"
+          description: Market information - either over_under or milestone type
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when this prop was last updated
+
     WNBATeam:
       type: object
       properties:
@@ -2805,6 +3435,163 @@ components:
           type: integer
         postseason:
           type: boolean
+
+    NHLBettingOdd:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Betting odd ID
+        game_id:
+          type: integer
+          description: Game ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+        spread_home_value:
+          type: string
+          nullable: true
+          description: Home team spread value (puck line)
+        spread_home_odds:
+          type: integer
+          nullable: true
+          description: Home team spread odds
+        spread_away_value:
+          type: string
+          nullable: true
+          description: Away team spread value (puck line)
+        spread_away_odds:
+          type: integer
+          nullable: true
+          description: Away team spread odds
+        moneyline_home_odds:
+          type: integer
+          nullable: true
+          description: Home team moneyline odds
+        moneyline_away_odds:
+          type: integer
+          nullable: true
+          description: Away team moneyline odds
+        total_value:
+          type: string
+          nullable: true
+          description: Total goals line value
+        total_over_odds:
+          type: integer
+          nullable: true
+          description: Over total odds
+        total_under_odds:
+          type: integer
+          nullable: true
+          description: Under total odds
+        updated_at:
+          type: string
+          format: date-time
+
+    NHLPlayerPropMarketOverUnder:
+      type: object
+      description: Over/under market type for NHL player props
+      required:
+        - type
+        - over_odds
+        - under_odds
+      properties:
+        type:
+          type: string
+          enum: [over_under]
+          description: Market type identifier
+        over_odds:
+          type: integer
+          description: American odds for over bet
+        under_odds:
+          type: integer
+          description: American odds for under bet
+
+    NHLPlayerPropMarketMilestone:
+      type: object
+      description: Milestone market type for NHL player props
+      required:
+        - type
+        - odds
+      properties:
+        type:
+          type: string
+          enum: [milestone]
+          description: Market type identifier
+        odds:
+          type: integer
+          description: American odds for milestone bet
+
+    NHLPlayerProp:
+      type: object
+      description: NHL player prop betting data
+      required:
+        - id
+        - game_id
+        - player_id
+        - vendor
+        - prop_type
+        - line_value
+        - market
+        - updated_at
+      properties:
+        id:
+          type: integer
+          description: Unique player prop ID
+        game_id:
+          type: integer
+          description: NHL game ID
+        player_id:
+          type: integer
+          description: NHL player ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+          enum:
+            - fanduel
+            - draftkings
+            - caesars
+        prop_type:
+          type: string
+          description: Type of player prop
+          enum:
+            - anytime_goal
+            - anytime_goal_1p
+            - anytime_goal_2p
+            - anytime_goal_3p
+            - assists
+            - first_goal
+            - first_goal_2p
+            - first_goal_3p
+            - goals
+            - last_goal
+            - overtime_goal
+            - points
+            - points_1p
+            - points_2p
+            - points_3p
+            - power_play_points
+            - saves
+            - second_goal
+            - shots_on_goal
+            - shots_on_goal_1p
+            - shots_on_goal_2p
+            - shots_on_goal_3p
+            - third_goal
+          example: points
+        line_value:
+          type: string
+          description: The line value for the prop
+          example: "1.5"
+        market:
+          oneOf:
+            - $ref: "#/components/schemas/NHLPlayerPropMarketOverUnder"
+            - $ref: "#/components/schemas/NHLPlayerPropMarketMilestone"
+          description: Market information - either over_under or milestone type
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when this prop was last updated
 
     # NCAAF Components
     NCAAFConference:
@@ -3833,6 +4620,59 @@ components:
             - nullable: true
           description: Away team with tournament seed and game outcome
 
+    NCAABBettingOdd:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Betting odd ID
+        game_id:
+          type: integer
+          description: Game ID
+        vendor:
+          type: string
+          description: Sportsbook vendor name
+        spread_home_value:
+          type: string
+          nullable: true
+          description: Home team spread value
+        spread_home_odds:
+          type: integer
+          nullable: true
+          description: Home team spread odds
+        spread_away_value:
+          type: string
+          nullable: true
+          description: Away team spread value
+        spread_away_odds:
+          type: integer
+          nullable: true
+          description: Away team spread odds
+        moneyline_home_odds:
+          type: integer
+          nullable: true
+          description: Home team moneyline odds
+        moneyline_away_odds:
+          type: integer
+          nullable: true
+          description: Away team moneyline odds
+        total_value:
+          type: string
+          nullable: true
+          description: Total points line value
+        total_over_odds:
+          type: integer
+          nullable: true
+          description: Odds for over total
+        total_under_odds:
+          type: integer
+          nullable: true
+          description: Odds for under total
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
   parameters:
     CursorParam:
       name: cursor
@@ -3904,6 +4744,18 @@ components:
       style: form
       explode: true
       description: Filter by dates (YYYY-MM-DD)
+
+    GameIdsParam:
+      name: game_ids[]
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: integer
+      style: form
+      explode: true
+      description: Filter by game IDs
 
   responses:
     UnauthorizedError:
@@ -4521,6 +5373,52 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+  /nba/v1/lineups:
+    get:
+      summary: Get NBA game lineups
+      description: |
+        Retrieve starting lineups and bench players for NBA games.
+
+        **Important Notes:**
+        - Lineup data is only available starting from the 2025 NBA season
+        - Lineup data is only available once the game begins
+      tags: [NBA]
+      parameters:
+        - name: game_ids
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Array of game IDs to get lineups for
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+      responses:
+        "200":
+          description: NBA lineups for specified games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBALineup"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
   /nba/v1/leaders:
     get:
       summary: Get NBA stat leaders
@@ -4624,7 +5522,7 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
-  /nba/v1/odds:
+  /nba/v2/odds:
     get:
       summary: Get NBA betting odds
       description: Retrieve betting odds for NBA games. Either dates or game_ids is required.
@@ -4655,6 +5553,273 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/NBABettingOdd"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v2/odds/player_props:
+    get:
+      summary: Get NBA player prop betting odds
+      description: |
+        Retrieve live player prop betting data for NBA games. Player prop data is LIVE and updated in real-time.
+        We do not store historical data. As games near completion, many (or all) player props may be removed from sportsbooks.
+
+        **Note:** This endpoint returns all player props for the specified game in a single response. Pagination is not supported.
+
+        The API supports two market types:
+        - **over_under**: Traditional over/under markets where users can bet on whether a player will go over or under a specific line value
+        - **milestone**: Milestone markets where users bet on whether a player will reach a specific achievement
+
+        Available vendors: draftkings, betway, betrivers, ballybet, betparx, caesars, fanduel, rebet
+      tags: [NBA]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The game ID to retrieve player props for (required)
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter props for a specific player
+        - name: prop_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - assists
+              - assists_1q
+              - assists_first3min
+              - blocks
+              - double_double
+              - points
+              - points_1q
+              - points_assists
+              - points_first3min
+              - points_rebounds
+              - points_rebounds_assists
+              - rebounds
+              - rebounds_1q
+              - rebounds_assists
+              - rebounds_first3min
+              - steals
+              - threes
+              - triple_double
+          description: Filter by prop type. Supported values include individual stats (points, rebounds, assists, threes, steals, blocks), combo stats (points_assists, points_rebounds, points_rebounds_assists, rebounds_assists), achievements (double_double, triple_double), and various quarter/time-specific props.
+      responses:
+        "200":
+          description: NBA player prop betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAPlayerProp"
+                  meta:
+                    $ref: "#/components/schemas/PlayerPropMeta"
+              example:
+                data:
+                  - id: 123
+                    game_id: 15907925
+                    player_id: 246
+                    vendor: draftkings
+                    prop_type: points
+                    line_value: "25.5"
+                    market:
+                      type: over_under
+                      over_odds: -110
+                      under_odds: -110
+                    updated_at: "2025-11-23T19:24:39.000Z"
+                  - id: 124
+                    game_id: 15907925
+                    player_id: 246
+                    vendor: draftkings
+                    prop_type: points
+                    line_value: "30.0"
+                    market:
+                      type: milestone
+                      odds: 200
+                    updated_at: "2025-11-23T19:24:39.000Z"
+                  - id: 125
+                    game_id: 15907925
+                    player_id: 19
+                    vendor: betway
+                    prop_type: threes
+                    line_value: "4.5"
+                    market:
+                      type: over_under
+                      over_odds: 105
+                      under_odds: -125
+                    updated_at: "2025-11-23T19:24:39.000Z"
+                meta:
+                  per_page: 25
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/contracts/teams:
+    get:
+      summary: Get NBA player contracts by team
+      description: Returns all player contracts for a specific team and season. Season defaults to current season if not specified.
+      tags: [NBA]
+      parameters:
+        - name: team_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Team ID (required)
+        - $ref: "#/components/parameters/SeasonOptionalParam"
+      responses:
+        "200":
+          description: List of player contracts for the team
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAContract"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/contracts/players:
+    get:
+      summary: Get NBA player contracts
+      description: Returns contracts for a specific player, optionally filtered by seasons. Supports pagination.
+      tags: [NBA]
+      parameters:
+        - name: player_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Player ID (required)
+        - name: seasons[]
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by specific seasons
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+      responses:
+        "200":
+          description: List of player contracts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAContract"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/contracts/players/aggregate:
+    get:
+      summary: Get aggregated NBA player contract data
+      description: Returns multi-year contract aggregates for a specific player, including total value, guarantees, and contract metadata.
+      tags: [NBA]
+      parameters:
+        - name: player_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Player ID (required)
+      responses:
+        "200":
+          description: List of aggregated contract data for the player
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBAContractAggregate"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nba/v1/lineups:
+    get:
+      summary: Get NBA game lineups
+      description: Returns lineup information for NBA games, including which players started and their positions. Requires game_ids parameter. This is a paid+ tier endpoint.
+      tags: [NBA]
+      parameters:
+        - name: game_ids[]
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs (required)
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+      responses:
+        "200":
+          description: List of game lineups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NBALineup"
                   meta:
                     $ref: "#/components/schemas/Pagination"
         "400":
@@ -4734,6 +5899,105 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+
+  /nfl/v1/teams/{id}/roster:
+    get:
+      summary: Get NFL team roster
+      description: |
+        Retrieve the current roster and depth chart for a specific NFL team.
+        Note: Roster data is only available starting with the 2025 season.
+      tags: [NFL]
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Team ID
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Season year (defaults to most recent season in database). Data only available for 2025 season and later.
+      responses:
+        "200":
+          description: Team roster with depth chart information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLRosterEntry"
+              example:
+                data:
+                  - player:
+                      id: 2153
+                      first_name: "Connor"
+                      last_name: "McGovern"
+                      position: "Center"
+                      position_abbreviation: "C"
+                      height: "6' 5\""
+                      weight: "318 lbs"
+                      jersey_number: "66"
+                      college: "Penn State"
+                      experience: "7th Season"
+                      age: 28
+                    position: "C"
+                    depth: 1
+                    player_name: "Connor McGovern"
+                    injury_status: null
+                  - player:
+                      id: 279668
+                      first_name: "Alec"
+                      last_name: "Anderson"
+                      position: "Offensive Tackle"
+                      position_abbreviation: "OT"
+                      height: "6' 5\""
+                      weight: "305 lbs"
+                      jersey_number: "70"
+                      college: "UCLA"
+                      experience: "3rd Season"
+                      age: 26
+                    position: "C"
+                    depth: 2
+                    player_name: "Alec Anderson"
+                    injury_status: null
+                  - player:
+                      id: 279664
+                      first_name: "Sedrick"
+                      last_name: "Van Pran-Granger"
+                      position: "Center"
+                      position_abbreviation: "C"
+                      height: "6' 4\""
+                      weight: "310 lbs"
+                      jersey_number: "62"
+                      college: "Georgia"
+                      experience: "2nd Season"
+                      age: 24
+                    position: "C"
+                    depth: 3
+                    player_name: "Sedrick Van Pran-Granger"
+                    injury_status: null
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Forbidden - GOAT tier subscription required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
   /nfl/v1/players:
     get:
       summary: Get NFL players
@@ -5308,6 +6572,125 @@ paths:
                       $ref: "#/components/schemas/NFLBettingOdd"
                   meta:
                     $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nfl/v1/odds/player_props:
+    get:
+      summary: Get NFL player prop betting odds
+      description: |
+        Retrieve live player prop betting data for NFL games. Player prop data is LIVE and updated in real-time.
+        We do not store historical data. As games near completion, many (or all) player props may be removed from sportsbooks.
+
+        **Note:** This endpoint returns all player props for the specified game in a single response. Pagination is not supported.
+
+        The API supports two market types:
+        - **over_under**: Traditional over/under markets where users can bet on whether a player will go over or under a specific line value
+        - **milestone**: Milestone markets where users bet on whether a player will reach a specific achievement
+
+        Available vendors: draftkings, betway, betrivers, ballybet, betparx (more coming soon!)
+      tags: [NFL]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The game ID to retrieve player props for (required)
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter props for a specific player
+        - name: prop_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - anytime_td
+              - anytime_td_1h
+              - anytime_td_1q
+              - anytime_td_2h
+              - fg_made
+              - fg_made_1h
+              - first_td
+              - interceptions
+              - kicking_points
+              - longest_pass
+              - longest_reception
+              - longest_rush
+              - passing_attempts
+              - passing_completions
+              - passing_tds
+              - passing_tds_1h
+              - passing_yards
+              - passing_yards_1h
+              - receiving_yards
+              - receiving_yards_1h
+              - receptions
+              - rushing_attempts
+              - rushing_receiving_yards
+              - rushing_yards
+              - rushing_yards_1h
+          description: Filter by prop type. Supported values include passing, rushing, receiving, touchdown, and kicking statistics.
+        - name: vendors
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Filter by specific sportsbook vendors (e.g., draftkings, betrivers). If not provided, returns props from all available vendors.
+      responses:
+        "200":
+          description: NFL player prop betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NFLPlayerProp"
+                  meta:
+                    $ref: "#/components/schemas/PlayerPropMeta"
+              example:
+                data:
+                  - id: 111967700
+                    game_id: 424129
+                    player_id: 490
+                    vendor: betway
+                    prop_type: rushing_yards
+                    line_value: "85.5"
+                    market:
+                      type: over_under
+                      over_odds: -115
+                      under_odds: -110
+                    updated_at: "2025-11-29T16:28:13.503Z"
+                  - id: 112042232
+                    game_id: 424129
+                    player_id: 490
+                    vendor: draftkings
+                    prop_type: anytime_td
+                    line_value: "0.5"
+                    market:
+                      type: milestone
+                      odds: -250
+                    updated_at: "2025-11-29T16:31:25.627Z"
+                meta:
+                  next_cursor: 112042641
+                  per_page: 25
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -5971,6 +7354,254 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 
+  /mlb/v1/players/splits:
+    get:
+      summary: Get MLB player splits
+      description: Get player splits grouped by split_category (e.g., vs RHP/LHP, by month, by opponent, etc.)
+      tags: [MLB]
+      parameters:
+        - name: player_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Player ID
+        - name: season
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Season year
+      responses:
+        "200":
+          description: Player splits grouped by split_category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    description: Splits grouped by split_category (e.g., "split", "byDayMonth", "byOpponent")
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          player:
+                            $ref: "#/components/schemas/MLBPlayer"
+                          season:
+                            type: integer
+                          category:
+                            type: string
+                            description: batting or pitching
+                          split_category:
+                            type: string
+                            description: Category of split (e.g., split, byDayMonth, byOpponent)
+                          split_name:
+                            type: string
+                            description: Name of the split (e.g., "vs RHP", "April")
+                          split_abbreviation:
+                            type: string
+                            nullable: true
+                          at_bats:
+                            type: integer
+                            nullable: true
+                          runs:
+                            type: integer
+                            nullable: true
+                          hits:
+                            type: integer
+                            nullable: true
+                          doubles:
+                            type: integer
+                            nullable: true
+                          triples:
+                            type: integer
+                            nullable: true
+                          home_runs:
+                            type: integer
+                            nullable: true
+                          rbis:
+                            type: integer
+                            nullable: true
+                          walks:
+                            type: integer
+                            nullable: true
+                          hit_by_pitch:
+                            type: integer
+                            nullable: true
+                          strikeouts:
+                            type: integer
+                            nullable: true
+                          stolen_bases:
+                            type: integer
+                            nullable: true
+                          caught_stealing:
+                            type: integer
+                            nullable: true
+                          avg:
+                            type: number
+                            format: float
+                            nullable: true
+                          obp:
+                            type: number
+                            format: float
+                            nullable: true
+                          slg:
+                            type: number
+                            format: float
+                            nullable: true
+                          ops:
+                            type: number
+                            format: float
+                            nullable: true
+                          era:
+                            type: number
+                            format: float
+                            nullable: true
+                          wins:
+                            type: integer
+                            nullable: true
+                          losses:
+                            type: integer
+                            nullable: true
+                          saves:
+                            type: integer
+                            nullable: true
+                          save_opportunities:
+                            type: integer
+                            nullable: true
+                          games_played:
+                            type: integer
+                            nullable: true
+                          games_started:
+                            type: integer
+                            nullable: true
+                          complete_games:
+                            type: integer
+                            nullable: true
+                          innings_pitched:
+                            type: number
+                            format: float
+                            nullable: true
+                          hits_allowed:
+                            type: integer
+                            nullable: true
+                          runs_allowed:
+                            type: integer
+                            nullable: true
+                          earned_runs:
+                            type: integer
+                            nullable: true
+                          home_runs_allowed:
+                            type: integer
+                            nullable: true
+                          walks_allowed:
+                            type: integer
+                            nullable: true
+                          strikeouts_pitched:
+                            type: integer
+                            nullable: true
+                          opponent_avg:
+                            type: number
+                            format: float
+                            nullable: true
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /mlb/v1/players/versus:
+    get:
+      summary: Get MLB player vs player matchups
+      description: Get head-to-head batting statistics for batter against pitchers for a specific team, or pitcher against batters from a specific team
+      tags: [MLB]
+      parameters:
+        - name: player_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Player ID (batter or pitcher)
+        - name: opponent_team_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Opponent team ID
+      responses:
+        "200":
+          description: List of player vs player matchups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        player:
+                          $ref: "#/components/schemas/MLBPlayer"
+                        opponent_player:
+                          $ref: "#/components/schemas/MLBPlayer"
+                        opponent_team:
+                          $ref: "#/components/schemas/MLBTeam"
+                        at_bats:
+                          type: integer
+                          nullable: true
+                        hits:
+                          type: integer
+                          nullable: true
+                        doubles:
+                          type: integer
+                          nullable: true
+                        triples:
+                          type: integer
+                          nullable: true
+                        home_runs:
+                          type: integer
+                          nullable: true
+                        rbi:
+                          type: integer
+                          nullable: true
+                        walks:
+                          type: integer
+                          nullable: true
+                        strikeouts:
+                          type: integer
+                          nullable: true
+                        avg:
+                          type: number
+                          format: float
+                          nullable: true
+                        obp:
+                          type: number
+                          format: float
+                          nullable: true
+                        slg:
+                          type: number
+                          format: float
+                          nullable: true
+                        ops:
+                          type: number
+                          format: float
+                          nullable: true
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
   /nhl/v1/teams:
     get:
       summary: Get NHL teams
@@ -6423,6 +8054,151 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "400":
           $ref: "#/components/responses/BadRequestError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/odds:
+    get:
+      summary: Get NHL betting odds
+      description: Retrieve betting odds for NHL games. Either dates or game_ids is required.
+      tags: [NHL]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: dates
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: date
+          style: form
+          explode: true
+          description: Filter by specific dates (YYYY-MM-DD format)
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+      responses:
+        "200":
+          description: NHL betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLBettingOdd"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /nhl/v1/odds/player_props:
+    get:
+      summary: Get NHL player prop betting odds
+      description: |
+        Retrieve live player prop betting data for NHL games. Player prop data is LIVE and updated in real-time.
+        We do not store historical data. As games near completion, many (or all) player props may be removed from sportsbooks.
+
+        **Note:** This endpoint returns all player props for the specified game in a single response. Pagination is not supported.
+
+        The API supports two market types:
+        - **over_under**: Traditional over/under markets where users can bet on whether a player will go over or under a specific line value
+        - **milestone**: Milestone markets where users bet on whether a player will reach a specific achievement
+
+        Available vendors: fanduel, draftkings, betmgm, caesars, betrivers (more coming soon!)
+      tags: [NHL]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The game ID to retrieve player props for (required)
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter props for a specific player
+        - name: prop_type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by prop type. Supported types include anytime_goal, anytime_goal_1p, anytime_goal_2p, anytime_goal_3p, assists, first_goal, first_goal_2p, first_goal_3p, goals, last_goal, overtime_goal, points, points_1p, points_2p, points_3p, power_play_points, saves, second_goal, shots_on_goal, shots_on_goal_1p, shots_on_goal_2p, shots_on_goal_3p, third_goal.
+        - name: vendors
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Filter by specific sportsbook vendors (e.g., draftkings, fanduel). If not provided, returns props from all available vendors.
+      responses:
+        "200":
+          description: NHL player prop betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NHLPlayerProp"
+                  meta:
+                    $ref: "#/components/schemas/PlayerPropMeta"
+              example:
+                data:
+                  - id: 12345678
+                    game_id: 67890
+                    player_id: 123
+                    vendor: draftkings
+                    prop_type: points
+                    line_value: "1.5"
+                    market:
+                      type: over_under
+                      over_odds: 120
+                      under_odds: -145
+                    updated_at: "2025-01-09T12:00:00.000Z"
+                  - id: 87654321
+                    game_id: 67890
+                    player_id: 123
+                    vendor: fanduel
+                    prop_type: goals
+                    line_value: "1"
+                    market:
+                      type: milestone
+                      odds: 250
+                    updated_at: "2025-01-09T12:00:00.000Z"
+                meta:
+                  next_cursor: 87654322
+                  per_page: 25
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
         "429":
           $ref: "#/components/responses/RateLimitError"
         "500":
@@ -6918,6 +8694,73 @@ paths:
                       $ref: "#/components/schemas/EPLBettingOdd"
                   meta:
                     $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /epl/v1/odds/player_props:
+    get:
+      summary: Get EPL player prop betting odds
+      description: |
+        Retrieve live player prop betting data for EPL games. Player prop data is LIVE and updated in real-time.
+        We do not store historical data. As games near completion, many (or all) player props may be removed from sportsbooks.
+
+        **Note:** This endpoint returns all player props for the specified game in a single response. Pagination is not supported.
+
+        The API supports two market types:
+        - **over_under**: Traditional over/under markets where users can bet on whether a player will go over or under a specific line value
+        - **milestone**: Milestone markets where users bet on whether a player will reach a specific achievement
+
+        Available vendors: draftkings, fanduel, caesars (more coming soon!)
+      tags: [EPL]
+      parameters:
+        - name: game_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The game ID to retrieve player props for (required)
+        - name: player_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter props for a specific player
+        - name: prop_type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by prop type. Supported types include anytime_goal, assists, first_goal, first_half_goal, goals_assists, header_goal, last_goal, outside_box_goal, saves, second_half_goal, shots, shots_on_target, tackles.
+        - name: vendors
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Filter by specific sportsbook vendors (e.g., draftkings, fanduel). If not provided, returns props from all available vendors.
+      responses:
+        "200":
+          description: EPL player prop betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EPLPlayerProp"
+                  meta:
+                    $ref: "#/components/schemas/PlayerPropMeta"
         "400":
           $ref: "#/components/responses/BadRequestError"
         "401":
@@ -9059,3 +10902,56 @@ paths:
           $ref: "#/components/responses/RateLimitError"
         "500":
           $ref: "#/components/responses/ServerError"
+
+  /ncaab/v1/odds:
+    get:
+      summary: Get NCAAB betting odds
+      description: Retrieve betting odds for NCAAB games. Either dates or game_ids is required.
+      tags: [NCAAB]
+      parameters:
+        - $ref: "#/components/parameters/CursorParam"
+        - $ref: "#/components/parameters/PerPageParam"
+        - name: dates
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              format: date
+          style: form
+          explode: true
+          description: Filter by game dates (YYYY-MM-DD format)
+        - name: game_ids
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: Filter by game IDs
+      responses:
+        "200":
+          description: NCAAB betting odds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NCAABBettingOdd"
+                  meta:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "429":
+          $ref: "#/components/responses/RateLimitError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+

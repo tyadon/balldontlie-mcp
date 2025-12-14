@@ -277,3 +277,75 @@ export const nhlBoxScoresSchema = {
   },
   additionalProperties: false,
 };
+
+export const nhlBettingOddsSchema = {
+  type: "object",
+  properties: {
+    dates: {
+      type: "array",
+      items: { type: "string", format: "date" },
+      description: "Filter by specific dates (YYYY-MM-DD format)",
+    },
+    game_ids: {
+      type: "array",
+      items: { type: "number" },
+      description: "Filter by game IDs",
+    },
+    cursor: {
+      type: "number",
+      description: "Pagination cursor",
+    },
+    per_page: {
+      type: "number",
+      minimum: 1,
+      maximum: 100,
+      description: "Number of results per page (max 100)",
+    },
+  },
+  additionalProperties: false,
+};
+
+export const nhlPlayerPropsSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "The game ID to retrieve player props for (required)",
+    },
+    player_id: {
+      type: "number",
+      description: "Filter props for a specific player",
+    },
+    prop_type: {
+      type: "string",
+      enum: [
+        "anytime_goal",
+        "anytime_goal_1p",
+        "anytime_goal_2p",
+        "anytime_goal_3p",
+        "assists",
+        "first_goal",
+        "first_goal_2p",
+        "first_goal_3p",
+        "goals",
+        "last_goal",
+        "overtime_goal",
+        "points",
+        "points_1p",
+        "points_2p",
+        "points_3p",
+        "power_play_points",
+        "saves",
+        "second_goal",
+        "shots_on_goal",
+        "shots_on_goal_1p",
+        "shots_on_goal_2p",
+        "shots_on_goal_3p",
+        "third_goal",
+      ],
+      description: "Filter by prop type",
+    },
+  },
+  required: ["game_id"],
+  additionalProperties: false,
+};

@@ -4,7 +4,7 @@ A Model Context Protocol (MCP) server that provides access to comprehensive spor
 
 ## Features
 
-- **120+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
+- **130+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
 - **8 Major Sports**: NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB
 - **Comprehensive Data**: Teams, players, games, statistics, standings, injuries, betting odds, and advanced analytics
 - **Authentication**: Seamless API key forwarding to backend
@@ -104,28 +104,33 @@ The server will automatically provide all available tools. You can ask your AI a
 
 ## Available Tools
 
-### NBA (16 tools)
+### NBA (22 tools)
 
-| Tool                      | Description                  | Parameters                                                                         |
-| ------------------------- | ---------------------------- | ---------------------------------------------------------------------------------- |
-| `nba_get_teams`           | Get all NBA teams            | `division`, `conference`                                                           |
-| `nba_get_team_by_id`      | Get specific NBA team        | `id` (required)                                                                    |
-| `nba_get_players`         | Get NBA players with filters | `search`, `first_name`, `last_name`, `team_ids`, `player_ids`, pagination          |
-| `nba_get_player_by_id`    | Get specific NBA player      | `id` (required)                                                                    |
-| `nba_get_active_players`  | Get active NBA players       | Same as `nba_get_players`                                                          |
-| `nba_get_games`           | Get NBA games                | `dates`, `seasons`, `team_ids`, `postseason`, `start_date`, `end_date`, pagination |
-| `nba_get_game_by_id`      | Get specific NBA game        | `id` (required)                                                                    |
-| `nba_get_stats`           | Get NBA statistics           | `dates`, `seasons`, `team_ids`, `player_ids`, `game_ids`, `postseason`, pagination |
-| `nba_get_season_averages` | Get season averages          | `season` (required), `category` (required), `type` (required), `player_ids`, `season_type` |
-| `nba_get_advanced_stats`  | Get advanced statistics      | Same as `nba_get_stats`                                                            |
-| `nba_get_box_scores`      | Get box scores               | `dates`, `seasons`, `team_ids`, `game_ids`, `postseason`, pagination               |
-| `nba_get_live_box_scores` | Get live box scores          | Same as `nba_get_box_scores`                                                       |
-| `nba_get_standings`       | Get team standings           | `season`, `conference`, `division`                                                 |
-| `nba_get_leaders`         | Get statistical leaders      | `season`, `stat_type`, `per_page`                                                  |
-| `nba_get_player_injuries` | Get player injuries          | `player_ids`, `team_ids`, pagination                                               |
-| `nba_get_betting_odds`     | Get betting odds for games   | `dates`, `game_ids`, pagination                                                    |
+| Tool                        | Description                       | Parameters                                                                         |
+| --------------------------- | --------------------------------- | ---------------------------------------------------------------------------------- |
+| `nba_get_teams`             | Get all NBA teams                 | `division`, `conference`                                                           |
+| `nba_get_team_by_id`        | Get specific NBA team             | `id` (required)                                                                    |
+| `nba_get_players`           | Get NBA players with filters      | `search`, `first_name`, `last_name`, `team_ids`, `player_ids`, pagination          |
+| `nba_get_player_by_id`      | Get specific NBA player           | `id` (required)                                                                    |
+| `nba_get_active_players`    | Get active NBA players            | Same as `nba_get_players`                                                          |
+| `nba_get_games`             | Get NBA games                     | `dates`, `seasons`, `team_ids`, `postseason`, `start_date`, `end_date`, pagination |
+| `nba_get_game_by_id`        | Get specific NBA game             | `id` (required)                                                                    |
+| `nba_get_stats`             | Get NBA statistics                | `dates`, `seasons`, `team_ids`, `player_ids`, `game_ids`, `postseason`, pagination |
+| `nba_get_season_averages`   | Get season averages               | `season` (required), `category` (required), `type` (required), `player_ids`, `season_type` |
+| `nba_get_advanced_stats`    | Get advanced statistics           | Same as `nba_get_stats`                                                            |
+| `nba_get_box_scores`        | Get box scores                    | `dates`, `seasons`, `team_ids`, `game_ids`, `postseason`, pagination               |
+| `nba_get_live_box_scores`   | Get live box scores               | Same as `nba_get_box_scores`                                                       |
+| `nba_get_standings`         | Get team standings                | `season`, `conference`, `division`                                                 |
+| `nba_get_leaders`           | Get statistical leaders           | `season`, `stat_type`, `per_page`                                                  |
+| `nba_get_player_injuries`   | Get player injuries               | `player_ids`, `team_ids`, pagination                                               |
+| `nba_get_betting_odds`      | Get betting odds for games        | `dates`, `game_ids`, pagination                                                    |
+| `nba_get_lineups`           | Get game lineups                  | `game_ids` (required), pagination                                                  |
+| `nba_get_player_props`      | Get player prop betting odds      | `game_id` (required), `player_id`, `prop_type`                                     |
+| `nba_get_contracts_by_team` | Get player contracts by team      | `team_id` (required), `season`                                                     |
+| `nba_get_contracts_by_player` | Get player contracts            | `player_id` (required), `seasons`, pagination                                      |
+| `nba_get_contracts_aggregate` | Get aggregated contract data    | `player_id` (required)                                                             |
 
-### NFL (15 tools)
+### NFL (17 tools)
 
 | Tool                               | Description                  | Parameters                                                                                  |
 | ---------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------- |
@@ -144,6 +149,8 @@ The server will automatically provide all available tools. You can ask your AI a
 | `nfl_get_advanced_passing_stats`   | Get advanced passing stats   | Same as rushing                                                                             |
 | `nfl_get_advanced_receiving_stats` | Get advanced receiving stats | Same as rushing                                                                             |
 | `nfl_get_betting_odds`             | Get betting odds for games   | `season`, `week`, `game_ids`, pagination                                                    |
+| `nfl_get_team_roster`              | Get team roster/depth chart  | `id` (required), `season`                                                                   |
+| `nfl_get_player_props`             | Get player prop betting odds | `game_id` (required), `player_id`, `prop_type`, `vendors`                                   |
 
 ### MLB (12 tools)
 
@@ -162,43 +169,47 @@ The server will automatically provide all available tools. You can ask your AI a
 | `mlb_get_standings`         | Get team standings      | `season`, `league`, `division`                                                                  |
 | `mlb_get_player_injuries`   | Get player injuries     | `player_ids`, `team_ids`, pagination                                                            |
 
-### EPL (16 tools)
+### EPL (17 tools)
 
-| Tool                           | Description             | Parameters                                                                    |
-| ------------------------------ | ----------------------- | ----------------------------------------------------------------------------- |
-| `epl_get_teams`                | Get all EPL teams       | pagination                                                                    |
-| `epl_get_team_by_id`           | Get specific EPL team   | `id` (required)                                                               |
-| `epl_get_team_players`         | Get team players        | `id` (required), pagination                                                   |
-| `epl_get_team_season_stats`    | Get team season stats   | `id` (required), `season`, `stat_types`                                       |
-| `epl_get_team_stats_leaders`   | Get team stat leaders   | `season`, `stat_type`, `per_page`                                             |
-| `epl_get_standings`            | Get EPL standings       | `season`                                                                      |
-| `epl_get_players`              | Get EPL players         | `search`, `team_ids`, `player_ids`, `position`, pagination                    |
-| `epl_get_player_by_id`         | Get specific EPL player | `id` (required)                                                               |
-| `epl_get_player_season_stats`  | Get player season stats | `id` (required), `season`, `stat_types`                                       |
-| `epl_get_player_stats_leaders` | Get player stat leaders | `season`, `stat_type`, `per_page`                                             |
-| `epl_get_games`                | Get EPL games           | `dates`, `seasons`, `team_ids`, `weeks`, `start_date`, `end_date`, pagination |
-| `epl_get_game_by_id`           | Get specific EPL game   | `id` (required)                                                               |
-| `epl_get_game_lineups`         | Get game lineups        | `id` (required)                                                               |
-| `epl_get_game_goals`           | Get game goals          | `id` (required)                                                               |
-| `epl_get_game_team_stats`      | Get game team stats     | `id` (required)                                                               |
-| `epl_get_game_player_stats`    | Get game player stats   | `id` (required)                                                               |
+| Tool                           | Description                  | Parameters                                                                    |
+| ------------------------------ | ---------------------------- | ----------------------------------------------------------------------------- |
+| `epl_get_teams`                | Get all EPL teams            | pagination                                                                    |
+| `epl_get_team_by_id`           | Get specific EPL team        | `id` (required)                                                               |
+| `epl_get_team_players`         | Get team players             | `id` (required), pagination                                                   |
+| `epl_get_team_season_stats`    | Get team season stats        | `id` (required), `season`, `stat_types`                                       |
+| `epl_get_team_stats_leaders`   | Get team stat leaders        | `season`, `stat_type`, `per_page`                                             |
+| `epl_get_standings`            | Get EPL standings            | `season`                                                                      |
+| `epl_get_players`              | Get EPL players              | `search`, `team_ids`, `player_ids`, `position`, pagination                    |
+| `epl_get_player_by_id`         | Get specific EPL player      | `id` (required)                                                               |
+| `epl_get_player_season_stats`  | Get player season stats      | `id` (required), `season`, `stat_types`                                       |
+| `epl_get_player_stats_leaders` | Get player stat leaders      | `season`, `stat_type`, `per_page`                                             |
+| `epl_get_games`                | Get EPL games                | `dates`, `seasons`, `team_ids`, `weeks`, `start_date`, `end_date`, pagination |
+| `epl_get_game_by_id`           | Get specific EPL game        | `id` (required)                                                               |
+| `epl_get_game_lineups`         | Get game lineups             | `id` (required)                                                               |
+| `epl_get_game_goals`           | Get game goals               | `id` (required)                                                               |
+| `epl_get_game_team_stats`      | Get game team stats          | `id` (required)                                                               |
+| `epl_get_game_player_stats`    | Get game player stats        | `id` (required)                                                               |
+| `epl_get_betting_odds`         | Get betting odds for games   | `season`, `week`, `game_ids`, pagination                                      |
+| `epl_get_player_props`         | Get player prop betting odds | `game_id` (required), `player_id`, `prop_type`                                |
 
-### NHL (12 tools)
+### NHL (14 tools)
 
-| Tool                           | Description             | Parameters                                                                          |
-| ------------------------------ | ----------------------- | ----------------------------------------------------------------------------------- |
-| `nhl_get_teams`                | Get all NHL teams       | `conference`, `division`, pagination                                                |
-| `nhl_get_team_by_id`           | Get specific NHL team   | `id` (required)                                                                     |
-| `nhl_get_team_season_stats`    | Get team season stats   | `id` (required), `season`                                                           |
-| `nhl_get_team_stats_leaders`   | Get team stat leaders   | `season`, `stat_type`, `per_page`                                                   |
-| `nhl_get_players`              | Get NHL players         | `search`, `team_ids`, `player_ids`, `position`, pagination                          |
-| `nhl_get_player_by_id`         | Get specific NHL player | `id` (required)                                                                     |
-| `nhl_get_player_season_stats`  | Get player season stats | `id` (required), `season`                                                           |
-| `nhl_get_player_stats_leaders` | Get player stat leaders | `season`, `stat_type`, `per_page`                                                   |
-| `nhl_get_games`                | Get NHL games           | `dates`, `seasons`, `team_ids`, `season_type`, `start_date`, `end_date`, pagination |
-| `nhl_get_game_by_id`           | Get specific NHL game   | `id` (required)                                                                     |
-| `nhl_get_standings`            | Get NHL standings       | `season`, `conference`, `division`                                                  |
-| `nhl_get_box_scores`           | Get NHL box scores      | `dates`, `seasons`, `team_ids`, `game_ids`, `season_type`, pagination               |
+| Tool                           | Description                  | Parameters                                                                          |
+| ------------------------------ | ---------------------------- | ----------------------------------------------------------------------------------- |
+| `nhl_get_teams`                | Get all NHL teams            | `conference`, `division`, pagination                                                |
+| `nhl_get_team_by_id`           | Get specific NHL team        | `id` (required)                                                                     |
+| `nhl_get_team_season_stats`    | Get team season stats        | `id` (required), `season`                                                           |
+| `nhl_get_team_stats_leaders`   | Get team stat leaders        | `season`, `stat_type`, `per_page`                                                   |
+| `nhl_get_players`              | Get NHL players              | `search`, `team_ids`, `player_ids`, `position`, pagination                          |
+| `nhl_get_player_by_id`         | Get specific NHL player      | `id` (required)                                                                     |
+| `nhl_get_player_season_stats`  | Get player season stats      | `id` (required), `season`                                                           |
+| `nhl_get_player_stats_leaders` | Get player stat leaders      | `season`, `stat_type`, `per_page`                                                   |
+| `nhl_get_games`                | Get NHL games                | `dates`, `seasons`, `team_ids`, `season_type`, `start_date`, `end_date`, pagination |
+| `nhl_get_game_by_id`           | Get specific NHL game        | `id` (required)                                                                     |
+| `nhl_get_standings`            | Get NHL standings            | `season`, `conference`, `division`                                                  |
+| `nhl_get_box_scores`           | Get NHL box scores           | `dates`, `seasons`, `team_ids`, `game_ids`, `season_type`, pagination               |
+| `nhl_get_betting_odds`         | Get betting odds for games   | `dates`, `game_ids`, pagination                                                     |
+| `nhl_get_player_props`         | Get player prop betting odds | `game_id` (required), `player_id`, `prop_type`                                      |
 
 ### WNBA (14 tools)
 
@@ -241,7 +252,7 @@ The server will automatically provide all available tools. You can ask your AI a
 | `ncaaf_get_team_season_stats`    | Get team season stats        | `season` (required), `team_ids`, pagination                                                 |
 | `ncaaf_get_betting_odds`         | Get betting odds for games   | `season`, `week`, `game_ids`, pagination                                                    |
 
-### NCAAB (17 tools)
+### NCAAB (18 tools)
 
 | Tool                              | Description                  | Parameters                                                                                  |
 | --------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------- |
@@ -262,6 +273,7 @@ The server will automatically provide all available tools. You can ask your AI a
 | `ncaab_get_player_season_stats`   | Get player season stats      | `season` (required), `player_ids`, `team_ids`, pagination                                   |
 | `ncaab_get_team_season_stats`     | Get team season stats        | `season` (required), `team_ids`, pagination                                                 |
 | `ncaab_get_brackets`              | Get tournament brackets      | `season`, pagination                                                                        |
+| `ncaab_get_betting_odds`          | Get betting odds for games   | `dates`, `game_ids`, pagination                                                             |
 
 ## Authentication
 

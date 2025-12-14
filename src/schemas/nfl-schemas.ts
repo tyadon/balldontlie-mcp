@@ -389,3 +389,71 @@ export const nflPlaysSchema = {
   required: ["game_id"],
   additionalProperties: false,
 };
+
+export const nflRosterSchema = {
+  type: "object",
+  properties: {
+    id: {
+      type: "number",
+      description: "Team ID (required)",
+    },
+    season: {
+      type: "number",
+      description: "Season year (defaults to most recent season). Data only available for 2025 season and later.",
+    },
+  },
+  required: ["id"],
+  additionalProperties: false,
+};
+
+export const nflPlayerPropsSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "The game ID to retrieve player props for (required)",
+    },
+    player_id: {
+      type: "number",
+      description: "Filter props for a specific player",
+    },
+    prop_type: {
+      type: "string",
+      enum: [
+        "anytime_td",
+        "anytime_td_1h",
+        "anytime_td_1q",
+        "anytime_td_2h",
+        "fg_made",
+        "fg_made_1h",
+        "first_td",
+        "interceptions",
+        "kicking_points",
+        "longest_pass",
+        "longest_reception",
+        "longest_rush",
+        "passing_attempts",
+        "passing_completions",
+        "passing_tds",
+        "passing_tds_1h",
+        "passing_yards",
+        "passing_yards_1h",
+        "receiving_yards",
+        "receiving_yards_1h",
+        "receptions",
+        "rushing_attempts",
+        "rushing_receiving_yards",
+        "rushing_yards",
+        "rushing_yards_1h",
+      ],
+      description: "Filter by prop type",
+    },
+    vendors: {
+      type: "array",
+      items: { type: "string" },
+      description: "Filter by specific sportsbook vendors (e.g., draftkings, betrivers)",
+    },
+  },
+  required: ["game_id"],
+  additionalProperties: false,
+};

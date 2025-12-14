@@ -178,5 +178,19 @@ export function createEPLTools(apiClient: APIClient): MCPTool[] {
         return await apiClient.makeRequest("/epl/v1/odds", params, headers);
       },
     },
+
+    {
+      name: "epl_get_player_props",
+      description:
+        "Get EPL player prop betting odds. Player prop data is LIVE and updated in real-time. Returns all player props for the specified game.",
+      inputSchema: schemas.eplPlayerPropsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/epl/v1/odds/player_props",
+          params,
+          headers
+        );
+      },
+    },
   ];
 }

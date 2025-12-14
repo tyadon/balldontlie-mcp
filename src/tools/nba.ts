@@ -214,7 +214,52 @@ export function createNBATools(apiClient: APIClient): MCPTool[] {
       description: "Get NBA betting odds for games. Either dates or game_ids is required.",
       inputSchema: schemas.nbaBettingOddsSchema,
       handler: async (params: any, headers?: Record<string, string>) => {
-        return await apiClient.makeRequest("/v1/odds", params, headers);
+        return await apiClient.makeRequest("/v2/odds", params, headers);
+      },
+    },
+
+    {
+      name: "nba_get_lineups",
+      description: "Get NBA game lineups. Lineup data is only available starting from the 2025 NBA season and once the game begins.",
+      inputSchema: schemas.nbaLineupsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/v1/lineups", params, headers);
+      },
+    },
+
+    {
+      name: "nba_get_player_props",
+      description: "Get NBA player prop betting odds. Player prop data is LIVE and updated in real-time. Returns all player props for the specified game.",
+      inputSchema: schemas.nbaPlayerPropsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/v2/odds/player_props", params, headers);
+      },
+    },
+
+    {
+      name: "nba_get_contracts_by_team",
+      description: "Get NBA player contracts by team. Returns all player contracts for a specific team and season.",
+      inputSchema: schemas.nbaContractsByTeamSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/v1/contracts/teams", params, headers);
+      },
+    },
+
+    {
+      name: "nba_get_contracts_by_player",
+      description: "Get NBA player contracts. Returns contracts for a specific player, optionally filtered by seasons.",
+      inputSchema: schemas.nbaContractsByPlayerSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/v1/contracts/players", params, headers);
+      },
+    },
+
+    {
+      name: "nba_get_contracts_aggregate",
+      description: "Get aggregated NBA player contract data. Returns multi-year contract aggregates including total value, guarantees, and contract metadata.",
+      inputSchema: schemas.nbaContractsAggregateSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/v1/contracts/players/aggregate", params, headers);
       },
     },
   ];

@@ -209,5 +209,15 @@ export function createNCAABTools(apiClient: APIClient): MCPTool[] {
         );
       },
     },
+
+    {
+      name: "ncaab_get_betting_odds",
+      description:
+        "Get NCAAB betting odds for games. Either dates or game_ids is required.",
+      inputSchema: schemas.ncaabBettingOddsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/ncaab/v1/odds", params, headers);
+      },
+    },
   ];
 }

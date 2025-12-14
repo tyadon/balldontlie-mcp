@@ -220,5 +220,34 @@ export function createNFLTools(apiClient: APIClient): MCPTool[] {
         return await apiClient.makeRequest("/nfl/v1/plays", params, headers);
       },
     },
+
+    {
+      name: "nfl_get_team_roster",
+      description:
+        "Get NFL team roster with depth chart information. Roster data is only available starting with the 2025 season.",
+      inputSchema: schemas.nflRosterSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        const { id, ...queryParams } = params;
+        return await apiClient.makeRequest(
+          `/nfl/v1/teams/${id}/roster`,
+          queryParams,
+          headers
+        );
+      },
+    },
+
+    {
+      name: "nfl_get_player_props",
+      description:
+        "Get NFL player prop betting odds. Player prop data is LIVE and updated in real-time. Returns all player props for the specified game.",
+      inputSchema: schemas.nflPlayerPropsSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest(
+          "/nfl/v1/odds/player_props",
+          params,
+          headers
+        );
+      },
+    },
   ];
 }
