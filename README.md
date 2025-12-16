@@ -1,11 +1,11 @@
 # BALLDONTLIE Sports MCP Server
 
-A Model Context Protocol (MCP) server that provides access to comprehensive sports data from the BALLDONTLIE API, including NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, and NCAAB statistics, player information, game data, and more.
+A Model Context Protocol (MCP) server that provides access to comprehensive sports data from the BALLDONTLIE API, including NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, and MMA statistics, player information, game data, and more.
 
 ## Features
 
-- **130+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
-- **8 Major Sports**: NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB
+- **140+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
+- **9 Major Sports**: NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, MMA
 - **Comprehensive Data**: Teams, players, games, statistics, standings, injuries, betting odds, and advanced analytics
 - **Authentication**: Seamless API key forwarding to backend
 - **Pagination**: Full support for cursor-based pagination
@@ -274,6 +274,23 @@ The server will automatically provide all available tools. You can ask your AI a
 | `ncaab_get_team_season_stats`     | Get team season stats        | `season` (required), `team_ids`, pagination                                                 |
 | `ncaab_get_brackets`              | Get tournament brackets      | `season`, pagination                                                                        |
 | `ncaab_get_betting_odds`          | Get betting odds for games   | `dates`, `game_ids`, pagination                                                             |
+
+### MMA (12 tools)
+
+| Tool                        | Description                           | Parameters                                                       |
+| --------------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| `mma_get_leagues`           | Get all MMA leagues (UFC, etc.)       | -                                                                |
+| `mma_get_league_by_id`      | Get specific MMA league               | `id` (required)                                                  |
+| `mma_get_events`            | Get MMA events                        | `date`, `year`, pagination                                       |
+| `mma_get_event_by_id`       | Get specific MMA event                | `id` (required)                                                  |
+| `mma_get_fighters`          | Get MMA fighters                      | `search`, `fighter_ids`, pagination                              |
+| `mma_get_fighter_by_id`     | Get specific MMA fighter              | `id` (required)                                                  |
+| `mma_get_fights`            | Get MMA fights                        | `fight_ids`, `fighter_ids`, `event_ids`, pagination              |
+| `mma_get_fight_by_id`       | Get specific MMA fight                | `id` (required)                                                  |
+| `mma_get_rankings`          | Get MMA fighter rankings              | -                                                                |
+| `mma_get_fight_stats`       | Get detailed fight statistics         | `fight_ids`, `fighter_ids`, `event_ids`, pagination              |
+| `mma_get_fight_stat_by_id`  | Get specific fight statistics         | `id` (required)                                                  |
+| `mma_get_betting_odds`      | Get MMA betting odds                  | `event_id`, `fight_id`                                           |
 
 ## Authentication
 

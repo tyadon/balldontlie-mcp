@@ -13,6 +13,7 @@ import { createNHLTools } from "./tools/nhl.js";
 import { createWNBATools } from "./tools/wnba.js";
 import { createNCAAFTools } from "./tools/ncaaf.js";
 import { createNCAABTools } from "./tools/ncaab.js";
+import { createMMATools } from "./tools/mma.js";
 import { MCPTool } from "./types.js";
 
 const app = express();
@@ -40,6 +41,7 @@ async function initializeTools() {
       ...createWNBATools(apiClient),
       ...createNCAAFTools(apiClient),
       ...createNCAABTools(apiClient),
+      ...createMMATools(apiClient),
     ];
 
     allTools.forEach((tool) => {
