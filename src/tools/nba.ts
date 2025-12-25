@@ -262,5 +262,14 @@ export function createNBATools(apiClient: APIClient): MCPTool[] {
         return await apiClient.makeRequest("/v1/contracts/players/aggregate", params, headers);
       },
     },
+
+    {
+      name: "nba_get_plays",
+      description: "Get NBA play-by-play data for a specific game. Returns all plays in chronological order including shot attempts, turnovers, fouls, and other game events.",
+      inputSchema: schemas.nbaPlaysSchema,
+      handler: async (params: any, headers?: Record<string, string>) => {
+        return await apiClient.makeRequest("/nba/v1/plays", params, headers);
+      },
+    },
   ];
 }

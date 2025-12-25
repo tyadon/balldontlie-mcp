@@ -1,11 +1,11 @@
 # BALLDONTLIE Sports MCP Server
 
-A Model Context Protocol (MCP) server that provides access to comprehensive sports data from the BALLDONTLIE API, including NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, MMA, and FIFA World Cup 2026 statistics, player information, game data, and more.
+A Model Context Protocol (MCP) server that provides access to comprehensive sports data from the BALLDONTLIE API, including NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, MMA, FIFA World Cup 2026, La Liga, Serie A, UEFA Champions League, Bundesliga, and Ligue 1 statistics, player information, game data, and more.
 
 ## Features
 
-- **145+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
-- **10 Major Sports**: NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, MMA, FIFA World Cup 2026
+- **200+ Sports Endpoints**: Complete access to all BALLDONTLIE API endpoints
+- **15 Major Sports/Leagues**: NBA, WNBA, NFL, MLB, EPL, NHL, NCAAF, NCAAB, MMA, FIFA World Cup 2026, La Liga, Serie A, UEFA Champions League, Bundesliga, Ligue 1
 - **Comprehensive Data**: Teams, players, games, statistics, standings, injuries, betting odds, and advanced analytics
 - **Authentication**: Seamless API key forwarding to backend
 - **Pagination**: Full support for cursor-based pagination
@@ -104,7 +104,7 @@ The server will automatically provide all available tools. You can ask your AI a
 
 ## Available Tools
 
-### NBA (22 tools)
+### NBA (23 tools)
 
 | Tool                        | Description                       | Parameters                                                                         |
 | --------------------------- | --------------------------------- | ---------------------------------------------------------------------------------- |
@@ -129,6 +129,7 @@ The server will automatically provide all available tools. You can ask your AI a
 | `nba_get_contracts_by_team` | Get player contracts by team      | `team_id` (required), `season`                                                     |
 | `nba_get_contracts_by_player` | Get player contracts            | `player_id` (required), `seasons`, pagination                                      |
 | `nba_get_contracts_aggregate` | Get aggregated contract data    | `player_id` (required)                                                             |
+| `nba_get_plays`             | Get play-by-play data             | `game_id` (required)                                                               |
 
 ### NFL (17 tools)
 
@@ -302,6 +303,87 @@ The server will automatically provide all available tools. You can ask your AI a
 | `fifa_get_matches`          | Get all matches including group and knockout (GOAT tier)  | -          |
 | `fifa_get_betting_odds`     | Get betting odds for matches (Requires GOAT tier)         | -          |
 | `fifa_get_futures_odds`     | Get futures betting odds (e.g., tournament winner, GOAT)  | -          |
+
+### La Liga (11 tools)
+
+| Tool                              | Description                               | Parameters                                                         |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `laliga_get_teams`                | Get all La Liga teams                     | `season` (required)                                                |
+| `laliga_get_rosters`              | Get team rosters                          | `team_id` (required), `season`, pagination                         |
+| `laliga_get_players`              | Get La Liga players                       | `season` (required), `team_ids`, `search`, pagination              |
+| `laliga_get_standings`            | Get La Liga standings                     | `season` (required)                                                |
+| `laliga_get_matches`              | Get La Liga matches                       | `season`, `team_ids`, `dates`, `start_date`, `end_date`, pagination|
+| `laliga_get_match_events`         | Get match events (goals, cards, etc.)     | `match_ids`, pagination                                            |
+| `laliga_get_match_lineups`        | Get match lineups                         | `match_ids`, pagination                                            |
+| `laliga_get_player_match_stats`   | Get player match statistics               | `match_ids`, `player_ids`, pagination                              |
+| `laliga_get_team_match_stats`     | Get team match statistics                 | `match_ids`, `team_ids`, pagination                                |
+| `laliga_get_betting_odds`         | Get betting odds for matches              | `match_ids`, `dates`, pagination                                   |
+| `laliga_get_player_props`         | Get player prop betting odds              | `match_id` (required), `player_id`, `prop_type`                    |
+
+### Serie A (11 tools)
+
+| Tool                              | Description                               | Parameters                                                         |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `seriea_get_teams`                | Get all Serie A teams                     | `season` (required)                                                |
+| `seriea_get_rosters`              | Get team rosters                          | `team_id` (required), `season`, pagination                         |
+| `seriea_get_players`              | Get Serie A players                       | `season` (required), `team_ids`, `search`, pagination              |
+| `seriea_get_standings`            | Get Serie A standings                     | `season` (required)                                                |
+| `seriea_get_matches`              | Get Serie A matches                       | `season`, `team_ids`, `dates`, `start_date`, `end_date`, pagination|
+| `seriea_get_match_events`         | Get match events (goals, cards, etc.)     | `match_ids`, pagination                                            |
+| `seriea_get_match_lineups`        | Get match lineups                         | `match_ids`, pagination                                            |
+| `seriea_get_player_match_stats`   | Get player match statistics               | `match_ids`, `player_ids`, pagination                              |
+| `seriea_get_team_match_stats`     | Get team match statistics                 | `match_ids`, `team_ids`, pagination                                |
+| `seriea_get_betting_odds`         | Get betting odds for matches              | `match_ids`, `dates`, pagination                                   |
+| `seriea_get_player_props`         | Get player prop betting odds              | `match_id` (required), `player_id`, `prop_type`                    |
+
+### UEFA Champions League (12 tools)
+
+| Tool                              | Description                               | Parameters                                                         |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `ucl_get_teams`                   | Get all UCL teams                         | `season` (required)                                                |
+| `ucl_get_rosters`                 | Get team rosters                          | `team_id` (required), `season`, pagination                         |
+| `ucl_get_players`                 | Get UCL players                           | `season` (required), `team_ids`, `search`, pagination              |
+| `ucl_get_standings`               | Get UCL standings                         | `season` (required)                                                |
+| `ucl_get_matches`                 | Get UCL matches                           | `season`, `team_ids`, `dates`, `start_date`, `end_date`, pagination|
+| `ucl_get_match_events`            | Get match events (goals, cards, etc.)     | `match_ids`, pagination                                            |
+| `ucl_get_match_lineups`           | Get match lineups                         | `match_ids`, pagination                                            |
+| `ucl_get_player_match_stats`      | Get player match statistics               | `match_ids`, `player_ids`, pagination                              |
+| `ucl_get_team_match_stats`        | Get team match statistics                 | `match_ids`, `team_ids`, pagination                                |
+| `ucl_get_betting_odds`            | Get betting odds for matches              | `match_ids`, `dates`, pagination                                   |
+| `ucl_get_player_props`            | Get player prop betting odds              | `match_id` (required), `player_id`, `prop_type`                    |
+| `ucl_get_futures_odds`            | Get futures betting odds                  | -                                                                  |
+
+### Bundesliga (11 tools)
+
+| Tool                                | Description                               | Parameters                                                         |
+| ----------------------------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `bundesliga_get_teams`              | Get all Bundesliga teams                  | `season` (required)                                                |
+| `bundesliga_get_rosters`            | Get team rosters                          | `team_id` (required), `season`, pagination                         |
+| `bundesliga_get_players`            | Get Bundesliga players                    | `season` (required), `team_ids`, `search`, pagination              |
+| `bundesliga_get_standings`          | Get Bundesliga standings                  | `season` (required)                                                |
+| `bundesliga_get_matches`            | Get Bundesliga matches                    | `season`, `team_ids`, `dates`, `start_date`, `end_date`, pagination|
+| `bundesliga_get_match_events`       | Get match events (goals, cards, etc.)     | `match_ids`, pagination                                            |
+| `bundesliga_get_match_lineups`      | Get match lineups                         | `match_ids`, pagination                                            |
+| `bundesliga_get_player_match_stats` | Get player match statistics               | `match_ids`, `player_ids`, pagination                              |
+| `bundesliga_get_team_match_stats`   | Get team match statistics                 | `match_ids`, `team_ids`, pagination                                |
+| `bundesliga_get_betting_odds`       | Get betting odds for matches              | `match_ids`, `dates`, pagination                                   |
+| `bundesliga_get_player_props`       | Get player prop betting odds              | `match_id` (required), `player_id`, `prop_type`                    |
+
+### Ligue 1 (11 tools)
+
+| Tool                              | Description                               | Parameters                                                         |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `ligue1_get_teams`                | Get all Ligue 1 teams                     | `season` (required)                                                |
+| `ligue1_get_rosters`              | Get team rosters                          | `team_id` (required), `season`, pagination                         |
+| `ligue1_get_players`              | Get Ligue 1 players                       | `season` (required), `team_ids`, `search`, pagination              |
+| `ligue1_get_standings`            | Get Ligue 1 standings                     | `season` (required)                                                |
+| `ligue1_get_matches`              | Get Ligue 1 matches                       | `season`, `team_ids`, `dates`, `start_date`, `end_date`, pagination|
+| `ligue1_get_match_events`         | Get match events (goals, cards, etc.)     | `match_ids`, pagination                                            |
+| `ligue1_get_match_lineups`        | Get match lineups                         | `match_ids`, pagination                                            |
+| `ligue1_get_player_match_stats`   | Get player match statistics               | `match_ids`, `player_ids`, pagination                              |
+| `ligue1_get_team_match_stats`     | Get team match statistics                 | `match_ids`, `team_ids`, pagination                                |
+| `ligue1_get_betting_odds`         | Get betting odds for matches              | `match_ids`, `dates`, pagination                                   |
+| `ligue1_get_player_props`         | Get player prop betting odds              | `match_id` (required), `player_id`, `prop_type`                    |
 
 ## Authentication
 

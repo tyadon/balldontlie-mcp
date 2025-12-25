@@ -15,6 +15,11 @@ import { createNCAAFTools } from "./tools/ncaaf.js";
 import { createNCAABTools } from "./tools/ncaab.js";
 import { createMMATools } from "./tools/mma.js";
 import { createFIFATools } from "./tools/fifa.js";
+import { createLaLigaTools } from "./tools/laliga.js";
+import { createSerieATools } from "./tools/seriea.js";
+import { createUCLTools } from "./tools/ucl.js";
+import { createBundesligaTools } from "./tools/bundesliga.js";
+import { createLigue1Tools } from "./tools/ligue1.js";
 import { MCPTool } from "./types.js";
 
 const app = express();
@@ -44,6 +49,11 @@ async function initializeTools() {
       ...createNCAABTools(apiClient),
       ...createMMATools(apiClient),
       ...createFIFATools(apiClient),
+      ...createLaLigaTools(apiClient),
+      ...createSerieATools(apiClient),
+      ...createUCLTools(apiClient),
+      ...createBundesligaTools(apiClient),
+      ...createLigue1Tools(apiClient),
     ];
 
     allTools.forEach((tool) => {

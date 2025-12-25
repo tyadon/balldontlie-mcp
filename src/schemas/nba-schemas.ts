@@ -469,3 +469,15 @@ export const nbaContractsAggregateSchema = {
   required: ["player_id"],
   additionalProperties: false,
 };
+
+export const nbaPlaysSchema = {
+  type: "object",
+  properties: {
+    game_id: {
+      type: "number",
+      description: "Game ID (required)",
+    },
+  },
+  required: ["game_id"],
+  additionalProperties: false,
+};
