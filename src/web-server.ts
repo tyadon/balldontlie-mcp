@@ -170,6 +170,8 @@ app.post("/mcp", async (req, res) => {
 
       case "tools/call":
         const { name, arguments: args } = params || {};
+        const callStartTime = Date.now();
+        console.log(`[MCP] tools/call: ${name}`, JSON.stringify(args || {}).slice(0, 200));
 
         if (!name) {
           return res.status(400).json({
@@ -201,16 +203,19 @@ app.post("/mcp", async (req, res) => {
           }
 
           const toolResult = await tool.handler(args || {}, headers);
+          const resultStr = JSON.stringify(toolResult, null, 2);
+          console.log(`[MCP] ${name} completed in ${Date.now() - callStartTime}ms, result: ${resultStr.length} chars`);
 
           result = {
             content: [
               {
                 type: "text",
-                text: JSON.stringify(toolResult, null, 2),
+                text: resultStr,
               },
             ],
           };
         } catch (toolError) {
+          console.error(`[MCP] ${name} FAILED after ${Date.now() - callStartTime}ms:`, toolError);
           const span = tracer.scope().active();
           span?.setTag("error", toolError instanceof Error ? toolError.message : String(toolError));
 
