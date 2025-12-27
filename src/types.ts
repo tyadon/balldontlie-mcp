@@ -23,6 +23,11 @@ export interface APIResponse {
     per_page?: number;
   };
   error?: string;
+  _truncated?: {
+    showing: number;
+    total: number;
+    hint: string;
+  };
 }
 
 export interface MCPTool {
