@@ -239,14 +239,32 @@ export function createNFLTools(apiClient: APIClient): MCPTool[] {
     {
       name: "nfl_get_player_props",
       description:
-        "Get NFL player prop betting odds. Player prop data is LIVE and updated in real-time. Returns all player props for the specified game.",
+        "Get NFL player prop betting odds. Player prop data is LIVE and updated in real-time. Use player_id to filter for a specific player's props. Without player_id filter, returns limited props per game (use prop_type to filter by bet type).",
       inputSchema: schemas.nflPlayerPropsSchema,
       handler: async (params: any, headers?: Record<string, string>) => {
-        return await apiClient.makeRequest(
+        const result = await apiClient.makeRequest(
           "/nfl/v1/odds/player_props",
           params,
           headers
         );
+
+        // If no player_id filter and result is large, truncate to avoid Claude MCP proxy timeout
+        // The full response can be 500KB+ which causes stream failures
+        if (!params.player_id && result.data && Array.isArray(result.data)) {
+          const MAX_PROPS = 50; // Limit to 50 props without player filter
+          const originalLength = result.data.length;
+          if (originalLength > MAX_PROPS) {
+            console.log(`[MCP] nfl_get_player_props: Truncating ${originalLength} props to ${MAX_PROPS}`);
+            result.data = result.data.slice(0, MAX_PROPS);
+            result._truncated = {
+              showing: MAX_PROPS,
+              total: originalLength,
+              hint: "Use player_id or prop_type parameter to filter results"
+            };
+          }
+        }
+
+        return result;
       },
     },
   ];
